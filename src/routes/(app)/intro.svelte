@@ -5,7 +5,7 @@
 	import { AutoColliders, Collider, CollisionGroups, RigidBody } from "@threlte/rapier";
 	import { BoxGeometry, Color, DodecahedronGeometry, Euler, HemisphereLight, IcosahedronGeometry, Mesh, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, OctahedronGeometry, PlaneGeometry, PointLight, PointLightHelper, PolyhedronGeometry, RectAreaLight, Sphere, SphereGeometry, SpotLight, SpotLightHelper, TetrahedronGeometry, Vector2, Vector3 } from "three";
 	
-	import Nekocom from "./Nekocom.svelte";
+	import Nekocom from "./nekocom/Nekocom.svelte";
 	import { cam, controls, dev } from "$lib/stores";
 	import { TriMesh } from "@dimforge/rapier3d-compat";
 

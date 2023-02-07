@@ -1,6 +1,6 @@
 <script lang="ts">
+    import {Canvas} from "@threlte/core";
 	import Scene from "./Scene.svelte";
-    import {Canvas,T, useThrelte} from "@threlte/core";
 	import Intro from "./intro.svelte";
 	import Interface from "./Interface.svelte";
 	import { controls, dev } from "$lib/stores";

@@ -18,12 +18,12 @@ export const mat_nekocom_ear = new MeshStandardMaterial({
 })
 
 export const mat_glass = new MeshPhysicalMaterial({
-    emissive: 0x000000,
+    emissive: 0xff4545,
     emissiveIntensity: 1,
-    color: 0x000000,
-    roughness: 0.3,
+    color: 0x555555,
+    roughness: 0.1,
     flatShading: true,
-    opacity: 0.5,
+    opacity: 0.1,
     transparent: true,
     transmission:0
 });
@@ -50,13 +50,10 @@ export const mat_nekocom_connectors = new MeshPhongMaterial({
     opacity    : 1
 });
 
-export const mat_bulb = new MeshPhysicalMaterial({
-    emissive: 0xffffee,
+export const mat_bulb = new MeshStandardMaterial({
+    emissive: 0x000000,
     emissiveIntensity: 1,
-    color: 0xffffee,
-    roughness: 0.5,
+    color: 0x000000,
+    roughness: 1,
     flatShading: true,
-    transparent: true,
-    transmission:0,
-    clearcoat:1,
 });

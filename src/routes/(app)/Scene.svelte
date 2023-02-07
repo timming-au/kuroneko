@@ -42,7 +42,6 @@
 
 		let save = localStorage.getItem("controls")
 		if(save){
-			console.log($controls)
 			let parse = JSON.parse(save)
 
 			/**
@@ -79,14 +78,17 @@
 			smaapass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
 		}
 	}
+	
 	const {scene} = useThrelte()
 	scene.background = new Color("rgb(10,10,10)");
 	let nekocom: Object3D
 	$:{
-		if($camera){
-			let obj = new Object3D().getObjectByName("nekocom")
+		if(scene){
+			let obj = scene.getObjectByName("nekocom")
+			console.log(scene)
 			if(obj){
 				nekocom = obj
+				console.log("look")
 			}
 		}
 	}
@@ -94,7 +96,7 @@
 {#key smaapass}
 	{#if smaapass}
 	<!-- <Pass pass={smaapass}></Pass> -->
-	<!-- <Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 0.5, 1, 0.6 )}></Pass> -->
+	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 0.5, 1, 0.6 )}></Pass>
 	{/if}
 {/key}
 <Environment path="src/assets/environment/" 
@@ -103,6 +105,7 @@
 	encoding={sRGBEncoding}
 />
 {#key nekocom}
+{console.log(nekocom)}
 <DirectionalLight shadow intensity={2} position={{ x: 3, y: 10, z: 20 }} target={nekocom}></DirectionalLight>
 {/key}
 <AmbientLight intensity={$controls.ambient.intensity} color={RGBToHex($controls.ambient.color)}></AmbientLight>

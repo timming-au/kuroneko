@@ -4,19 +4,21 @@
 	import { useGltf } from "@threlte/extras";
 	import { mat_nekocom_connectors } from "../Materials";
 	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
+	import type { Group } from "three";
     
 	const { gltf } = useGltf('src/assets/models/nekocom.gltf')
 
     export let rigidBodyType: RigidBodyTypeString
     export let pos:[x: number, y: number, z: number]
+    export let obj:Group
 </script>
 {#if $gltf}
 <RigidBody type={rigidBodyType}>
     <AutoColliders shape={'trimesh'}>
-        <T.Group {...$$restProps} position={pos} scale={3} rotation={[0,Math.PI,0]} name={"nekocom"}>
+        <T.Group bind:ref={obj} {...$$restProps} position={pos} scale={3} rotation={[0,Math.PI,0]} name={"nekocom"}>
             <!-- GLTF -->
             <T.Group>
-            <T.Mesh receiveShadow castShadow geometry={$gltf.nodes.monitor.geometry} material={$gltf.materials.monitor} />
+            <T.Mesh castShadow geometry={$gltf.nodes.monitor.geometry} material={$gltf.materials.monitor} />
             <!-- <T.Mesh receiveShadow castShadow geometry={$gltf.nodes.monitor.geometry} material={mat} /> -->
             <T.Mesh castShadow geometry={$gltf.nodes.tail.geometry} material={$gltf.materials.tail} position={[-1.13, -0.66, 0.6]} />
             <T.Mesh castShadow     

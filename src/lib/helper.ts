@@ -10,6 +10,10 @@ export function RGBToHex(color:RGB): number{
     return parseInt("0x" + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1))
 }
 
+export function RGBToString(color:RGB):string{
+    return `rgb(${Object.values(color).map(c=>Math.trunc(c)).join()})`
+}
+
 /**
  * Cubic easing.
  * @link https://easings.net/#easeOutCubic

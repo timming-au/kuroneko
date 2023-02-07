@@ -16,16 +16,21 @@
         comFolder.open()
 
         // point light
-        const pointFolder = gui.addFolder('pointLight')
-        pointFolder.add($controls.point, 'intensity', 0.1, 10)
-        pointFolder.add($controls.point, 'distance', 10, 400)
-        pointFolder.open()
+        const directFolder = gui.addFolder('directLight')
+        directFolder.add($controls.directional, 'intensity', 0.1, 10)
+        for(let key in $controls.directional.color){
+            directFolder.add($controls.directional.color, key, 0,255)
+        }
+        for(let key in $controls.directional.pos){
+            directFolder.add($controls.directional.pos, key, -10,10)
+        }
+        directFolder.open()
 
         // ambient light
         const ambientFolder = gui.addFolder('ambientLight')
-        ambientFolder.add($controls.ambient.color, 'r', 0,255)
-        ambientFolder.add($controls.ambient.color, 'g', 0,255)
-        ambientFolder.add($controls.ambient.color, 'b', 0,255)
+        for(let key in $controls.ambient.color){
+            ambientFolder.add($controls.ambient.color, key, 0,255)
+        }
         ambientFolder.add($controls.ambient, 'intensity',0.1,100)
         ambientFolder.open()
 
@@ -36,17 +41,16 @@
 
         // > skyColor
         const hemiSkyColorFolder = hemiFolder.addFolder('skyColor')
-        hemiSkyColorFolder.add($controls.hemisphere.skyColor, 'r', 0,255)
-        hemiSkyColorFolder.add($controls.hemisphere.skyColor, 'g', 0,255)
-        hemiSkyColorFolder.add($controls.hemisphere.skyColor, 'b', 0,255)
+        for(let key in $controls.hemisphere.skyColor){
+            hemiSkyColorFolder.add($controls.hemisphere.skyColor, key, 0,255)
+        }
         hemiSkyColorFolder.open()
 
         // > groundColor
         const hemiGroundColorFolder = hemiFolder.addFolder('groundColor')
-        hemiGroundColorFolder.add($controls.hemisphere.groundColor, 'r', 0,255)
-        hemiGroundColorFolder.add($controls.hemisphere.groundColor, 'g', 0,255)
-        hemiGroundColorFolder.add($controls.hemisphere.groundColor, 'b', 0,255)
-
+        for(let key in $controls.hemisphere.groundColor){
+            hemiGroundColorFolder.add($controls.hemisphere.groundColor, key, 0,255)
+        }
         hemiGroundColorFolder.open()
 
         /**

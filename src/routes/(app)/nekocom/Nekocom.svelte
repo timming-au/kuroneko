@@ -11,12 +11,13 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 	import Model from './model.svelte';
 	import Panel from './Panel.svelte';
 	
-	let comPos:[x: number, y: number, z: number] = [0,0,0]
+	export let comPos:[x: number, y: number, z: number] = [0,0,0]
+  	export let obj: Group
 </script>
 
 
 <CollisionGroups groups={[0, 15]}>
-	<Model pos={comPos} rigidBodyType={"fixed"}>
+	<Model bind:obj={obj} pos={comPos} rigidBodyType={"fixed"}>
     <Panel></Panel>
   </Model>
 </CollisionGroups>

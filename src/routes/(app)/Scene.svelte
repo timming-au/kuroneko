@@ -81,22 +81,11 @@
 	
 	const {scene} = useThrelte()
 	scene.background = new Color("rgb(10,10,10)");
-	let nekocom: Object3D
-	$:{
-		if(scene){
-			let obj = scene.getObjectByName("nekocom")
-			console.log(scene)
-			if(obj){
-				nekocom = obj
-				console.log("look")
-			}
-		}
-	}
 </script>
 {#key smaapass}
 	{#if smaapass}
 	<!-- <Pass pass={smaapass}></Pass> -->
-	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 0.5, 1, 0.6 )}></Pass>
+	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0.6 )}></Pass>
 	{/if}
 {/key}
 <Environment path="src/assets/environment/" 
@@ -104,10 +93,6 @@
 	format="hdr" 
 	encoding={sRGBEncoding}
 />
-{#key nekocom}
-{console.log(nekocom)}
-<DirectionalLight shadow intensity={2} position={{ x: 3, y: 10, z: 20 }} target={nekocom}></DirectionalLight>
-{/key}
 <AmbientLight intensity={$controls.ambient.intensity} color={RGBToHex($controls.ambient.color)}></AmbientLight>
 <HemisphereLight intensity={$controls.hemisphere.intensity} groundColor={RGBToHex($controls.hemisphere.groundColor)} skyColor={RGBToHex($controls.hemisphere.skyColor)}></HemisphereLight>
 <World gravity={{y:-19.62}}>

@@ -22,10 +22,18 @@ const def = writable({
         distance:20,
         power:50,
     },
-    point:{
+    directional:{
         intensity:1,
-        distance:20,
-        power:50,
+        color:{
+            r:40,
+            g:40,
+            b:40,
+        },
+        pos:{
+            x:0,
+            y:0,
+            z:0,
+        }
     },
     ambient:{
         color:{
@@ -55,10 +63,14 @@ export const controls:Writable<{
         distance: number;
         power: number;
     };
-    point: {
+    directional: {
         intensity: number;
-        distance: number;
-        power: number;
+        color:RGB
+        pos:{
+            x:number,
+            y:number,
+            z:number,
+        }
     };
     ambient: {
         color: RGB

@@ -2,7 +2,7 @@
     import {Canvas} from "@threlte/core";
 	import Scene from "./Scene.svelte";
 	import InnerWorld from "./innerWorld.svelte";
-	import Interface from "./Interface.svelte";
+	import Interface from "./interface.svelte";
 	import { controls, dev } from "$lib/stores";
     import "../../app.css"
 

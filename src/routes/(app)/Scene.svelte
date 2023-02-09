@@ -1,17 +1,15 @@
 <script lang="ts">
 	import { T, useFrame, PerspectiveCamera, DirectionalLight, AmbientLight, HemisphereLight, Pass, OrbitControls, Layers, useThrelte } from "@threlte/core";
-	import { get } from "svelte/store";
 	import {ACESFilmicToneMapping, Color , Object3D, sRGBEncoding, Vector2, Vector3} from "three";
-	import { DEG2RAD, lerp } from "three/src/math/MathUtils";
 	import {cam, controls, dev} from "$lib/stores"
 	import { Debug, World } from '@threlte/rapier'
 	import gsap from "gsap";
-	import {BloomPass} from "three/examples/jsm/postprocessing/BloomPass"
 	import {SMAAPass} from "three/examples/jsm/postprocessing/SMAAPass"
 	import {UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass"
 	import { onMount, tick } from "svelte";
 	import { RGBToHex } from "$lib/helper";
-	import { Environment } from "@threlte/extras";
+	import Hdr from "./hdr.svelte";
+	import Camera from "./camera.svelte";
 	// move camera on mousemove
 	const { pointer, camera } = useThrelte()
 	function pan(e: MouseEvent){
@@ -81,34 +79,23 @@
 	
 	const {scene} = useThrelte()
 	scene.background = new Color("rgb(10,10,10)");
+
+	console.log(scene)
 </script>
 {#key smaapass}
 	{#if smaapass}
 	<!-- <Pass pass={smaapass}></Pass> -->
-	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0.6 )}></Pass>
+	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0 )}></Pass>
 	{/if}
 {/key}
-<Environment path="src/assets/environment/" 
-	files="dawn.hdr" 
-	format="hdr" 
-	encoding={sRGBEncoding}
-/>
+
+<Hdr/>
+<Camera/>
+
 <AmbientLight intensity={$controls.ambient.intensity} color={RGBToHex($controls.ambient.color)}></AmbientLight>
 <HemisphereLight intensity={$controls.hemisphere.intensity} groundColor={RGBToHex($controls.hemisphere.groundColor)} skyColor={RGBToHex($controls.hemisphere.skyColor)}></HemisphereLight>
 <World gravity={{y:-19.62}}>
 	<!-- <Debug depthTest={false} depthWrite={false} /> -->
-	<PerspectiveCamera position={{x:0,y:3,z:20}} fov={30}>
-		{#if $dev}
-		<OrbitControls
-		target={{ y: 0 }}
-		maxPolarAngle={360 * DEG2RAD}
-		minPolarAngle={0 * DEG2RAD}
-		maxAzimuthAngle={180 * DEG2RAD}
-		minAzimuthAngle={-180 * DEG2RAD}
-		enableZoom={true}
-		/>
-		{/if}
-	</PerspectiveCamera>
 	<slot/>
 </World>
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))} on:mousemove={(e)=>pan(e)}></svelte:window>

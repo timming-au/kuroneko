@@ -2,7 +2,6 @@
     import { RigidBody, AutoColliders } from "@threlte/rapier";
     import { T } from "@threlte/core";
 	import { useGltf } from "@threlte/extras";
-	import { mat_nekocom_connectors } from "../Materials";
 	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
 	import type { Group } from "three";
     
@@ -11,6 +10,15 @@
     export let rigidBodyType: RigidBodyTypeString
     export let pos:[x: number, y: number, z: number]
     export let obj:Group
+
+    $:{
+        if($gltf){
+            for(let key in $gltf.materials){
+                $gltf.materials[key].metalness = 0.8
+                console.log($gltf.materials[key])
+            }   
+        }
+    }
 </script>
 {#if $gltf}
 <RigidBody type={rigidBodyType}>
@@ -23,7 +31,7 @@
             <T.Mesh castShadow geometry={$gltf.nodes.tail.geometry} material={$gltf.materials.tail} position={[-1.13, -0.66, 0.6]} />
             <T.Mesh castShadow     
                 geometry={$gltf.nodes.tail_connector.geometry}
-                material={mat_nekocom_connectors}
+                material={$gltf.materials['connector']}
                 position={[-0.03, -1.21, 0.39]}
             />
             <T.Mesh castShadow geometry={$gltf.nodes.ear_band.geometry}
@@ -42,10 +50,10 @@
             <T.Mesh castShadow geometry={$gltf.nodes.right_paw.geometry} material={$gltf.materials.paw} position={[0.58, -1.31, -0.74]} />
             <T.Mesh
                 geometry={$gltf.nodes.paw_connector_right.geometry}
-                material={mat_nekocom_connectors}
+                material={$gltf.materials['connector']}
                 position={[0.55, -1.21, -0.43]} castShadow/>
             <T.Mesh castShadow geometry={$gltf.nodes.paw_connector_left.geometry}
-                material={mat_nekocom_connectors}
+                material={$gltf.materials['connector']}
                 position={[-0.59, -1.21, -0.43]}
             />
             </T.Group>

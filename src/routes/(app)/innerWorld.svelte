@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { Pass, T, useFrame } from "@threlte/core";
+	import { InteractiveObject, T } from "@threlte/core";
     import { useThrelte } from "@threlte/core";
-	import { useGltf } from "@threlte/extras";
-	import { AutoColliders, Collider, CollisionGroups, RigidBody } from "@threlte/rapier";
-	import { BoxGeometry, Color, DirectionalLightHelper, DodecahedronGeometry, Euler, Group, HemisphereLight, IcosahedronGeometry, Mesh, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial, OctahedronGeometry, PlaneGeometry, PointLight, PointLightHelper, PolyhedronGeometry, RectAreaLight, Sphere, SphereGeometry, SpotLight, SpotLightHelper, TetrahedronGeometry, Vector2, Vector3 } from "three";
+	import { BoxGeometry, Color, DirectionalLightHelper, Group, MeshStandardMaterial, Vector3 } from "three";
 	
 	import Nekocom from "./nekocom/Nekocom.svelte";
-	import { cam, controls, dev } from "$lib/stores";
-	import { TriMesh } from "@dimforge/rapier3d-compat";
-	import { RGBToHex, RGBToString } from "$lib/helper";
+	import { controls, dev } from "$lib/stores";
+	import { RGBToString } from "$lib/helper";
+	import { PolyhedronFactory } from "./Factory";
+	import { mat_pink } from "./nekocom/Materials";
 
     const {scene} = useThrelte()
 	// light helper
@@ -23,25 +22,6 @@
 			scene.add( helper );
         }
     }
-
-	// floor
-	const floor = {
-		width:100,
-		height:3,
-		depth:100,
-		material:new MeshStandardMaterial({
-			color      :  new Color("rgb(226,35,213)"),
-			emissive   :  new Color("rgb(160,90,90)"),
-			flatShading: true,
-			opacity    : 1
-		}),
-		getGeometry: function(){
-			return new BoxGeometry(...this.getDimensions())
-		},
-		getDimensions:function(){
-			return [this.width,this.height,this.depth]
-		}
-	}
 	const {camera} = useThrelte()
 	$:{
 		if(nekoComObj && $camera && $controls){
@@ -49,6 +29,7 @@
 		}
 	}
 	let nekoComObj: Group;
+	let directionalLightPos:[x:number,y:number,z:number] = (function(){return Object.values($controls.directional.pos) as [x:number,y:number,z:number]})()
 </script>
 <!-- 
 <CollisionGroups groups={[0, 15]}>
@@ -60,7 +41,7 @@
 </CollisionGroups> -->
 {#key nekoComObj && $controls}
 {#if nekoComObj}
-<T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={Object.values($controls.directional.pos)} target={nekoComObj}></T.DirectionalLight>
+<T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
 {/key}
 <Nekocom bind:obj={nekoComObj}/>

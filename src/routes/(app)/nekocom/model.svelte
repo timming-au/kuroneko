@@ -8,14 +8,12 @@
 	const { gltf } = useGltf('src/assets/models/nekocom.gltf')
 
     export let rigidBodyType: RigidBodyTypeString
-    export let pos:[x: number, y: number, z: number]
     export let obj:Group
 
     $:{
         if($gltf){
             for(let key in $gltf.materials){
                 $gltf.materials[key].metalness = 0.8
-                console.log($gltf.materials[key])
             }   
         }
     }
@@ -23,7 +21,7 @@
 {#if $gltf}
 <RigidBody type={rigidBodyType}>
     <AutoColliders shape={'trimesh'}>
-        <T.Group bind:ref={obj} {...$$restProps} position={pos} scale={3} rotation={[0,Math.PI,0]} name={"nekocom"}>
+        <T.Group bind:ref={obj} {...$$restProps} name={"nekocom"}>
             <!-- GLTF -->
             <T.Group>
             <T.Mesh castShadow geometry={$gltf.nodes.monitor.geometry} material={$gltf.materials.monitor} />

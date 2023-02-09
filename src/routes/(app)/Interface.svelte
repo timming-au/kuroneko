@@ -5,13 +5,14 @@
 	import { onDestroy } from "svelte";
     import { tick } from "svelte";
     let gui: GUI
+
     onMount(async()=>{
         await tick()
         gui = new GUI()
         
         // com light
         const comFolder = gui.addFolder('comLight')
-        comFolder.add($controls.com, 'intensity', 0.1, 10)
+        comFolder.add($controls.com, 'intensity', 0.1, 20)
         comFolder.add($controls.com, 'distance', 10, 400)
         comFolder.open()
 

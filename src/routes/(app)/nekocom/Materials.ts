@@ -12,7 +12,7 @@ export const mat_glass = new MeshPhysicalMaterial({
     color: 0x111111,
     roughness: 0.2,
     flatShading: true,
-    opacity: 1,
+    opacity: 0.2,
     transparent: true,
     transmission:0
 });

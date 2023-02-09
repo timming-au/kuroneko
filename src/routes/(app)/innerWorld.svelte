@@ -14,13 +14,13 @@
 	let directionalLight: any;
 	let helper: DirectionalLightHelper
     $:{
-        if($dev && directionalLight && scene){
-			if(helper){
-				scene.remove(helper)
-			}
-			helper = new DirectionalLightHelper( directionalLight, 5 );
-			scene.add( helper );
-        }
+        // if($dev && directionalLight && scene){
+		// 	if(helper){
+		// 		scene.remove(helper)
+		// 	}
+		// 	helper = new DirectionalLightHelper( directionalLight, 5 );
+		// 	scene.add( helper );
+        // }
     }
 	const {camera} = useThrelte()
 	$:{
@@ -30,6 +30,7 @@
 	}
 	let nekoComObj: Group;
 	let directionalLightPos:[x:number,y:number,z:number] = (function(){return Object.values($controls.directional.pos) as [x:number,y:number,z:number]})()
+
 </script>
 <!-- 
 <CollisionGroups groups={[0, 15]}>
@@ -39,10 +40,15 @@
 		</AutoColliders>
 	</RigidBody>
 </CollisionGroups> -->
+{#if dev}
 {#key nekoComObj && $controls}
 {#if nekoComObj}
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
 {/key}
+{:else}
+<T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
+{/if}
+
 <Nekocom bind:obj={nekoComObj}/>
 

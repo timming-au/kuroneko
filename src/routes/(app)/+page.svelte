@@ -7,11 +7,11 @@
     import "../../app.css"
 
 </script>
-{#if $dev}
-<Interface/>
-{/if}
 <div class="w-screen h-screen absolute">
     <Canvas rendererParameters={{"logarithmicDepthBuffer":true,"antialias":true}}>
+        {#if $dev}
+        <Interface/>
+        {/if}
         <Scene>
             <InnerWorld></InnerWorld>
         </Scene>

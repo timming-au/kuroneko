@@ -11,36 +11,55 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 	import Model from './model.svelte';
 	import Panel from './Panel.svelte';
 	import { controls } from '$lib/stores';
+	import gsap from 'gsap';
+	import Content from '../content/content.svelte';
 	
 	export let comPos:[x: number, y: number, z: number] = [0,0,0]
   	export let obj: Group
-
 	let panel: Mesh
 	function screenSwitch(){
-		$controls.com.intensity = $controls.com.intensity == 0 ? 10 : 0
+		gsap.to($controls.com,{
+			intensity: $controls.com.intensity == 0 ? 20 : 0,
+			duration: $controls.com.intensity == 0 ? 0.2 : 0.8,
+			ease: $controls.com.intensity == 0 ? "power1.out" : "power4.out",
+			onUpdate:function(){
+				$controls.com.intensity = $controls.com.intensity
+			},
+		}) 
+		gsap.to($controls.directional,{
+			intensity: $controls.directional.intensity == 0 ? 20 : 0,
+			duration:$controls.directional.intensity == 0 ? 0.2 : 0.8,
+			ease:$controls.directional.intensity == 0 ? "power1.out" : "power4.out",
+			onUpdate:function(){
+				$controls.directional.intensity = $controls.directional.intensity
+			}
+		}) 
 	}
 </script>
 
-
-<CollisionGroups groups={[0, 15]}>
-	<Model bind:obj={obj} pos={comPos} rigidBodyType={"fixed"}>
-    	<Panel bind:panel={panel}></Panel>
-  	</Model>
-</CollisionGroups>
-
-<CollisionGroups groups={[0]}>
-	<RigidBody>
-		<AutoColliders>
-			<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
+<T.Group position={comPos} rotation={[0,Math.PI,0]}>
+	<CollisionGroups groups={[0, 15]}>
+		<Model scale={3} bind:obj={obj} rigidBodyType={"fixed"}>
+			<Panel bind:panel={panel}>
+				<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
+			</Panel>
+		</Model>
+	</CollisionGroups>
+	
+	<CollisionGroups groups={[0]}>
+		<RigidBody>
+			<AutoColliders>
+				<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
+			</AutoColliders>
+		</RigidBody>
+		<RigidBody>
+			<AutoColliders>
+		  <T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
+		  </T.Mesh>
 		</AutoColliders>
-	</RigidBody>
-	<RigidBody>
-		<AutoColliders>
-      <T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
-      </T.Mesh>
-    </AutoColliders>
-  </RigidBody> 
-</CollisionGroups>
+	  </RigidBody> 
+	</CollisionGroups>
+</T.Group>
 
 <T.Mesh position={[5,10,-20]} let:ref geometry={PolyhedronFactory.getRand()} material={mat_pink}>
 	<InteractiveObject interactive object={ref} on:pointerleave={()=>document.documentElement.style.cursor = 'default'} on:pointerenter={()=>document.documentElement.style.cursor = 'pointer'} on:click={()=>screenSwitch()}/>

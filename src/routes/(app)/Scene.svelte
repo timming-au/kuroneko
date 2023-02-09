@@ -80,7 +80,6 @@
 	const {scene} = useThrelte()
 	scene.background = new Color("rgb(10,10,10)");
 
-	console.log(scene)
 </script>
 {#key smaapass}
 	{#if smaapass}

@@ -46,6 +46,7 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-cloudflare": "^2.0.1",
+		"@sveltejs/adapter-static": "^2.0.1",
 		"dat.gui": "^0.7.9",
 		"gsap": "^3.11.4",
 		"stats.js": "^0.17.0"

@@ -1,5 +1,6 @@
 import { writable, type Writable } from "svelte/store";
 import type { RGB } from "three";
+import type { Graph } from "$lib/types";
 
 export const navi = writable(false)
 export const theme:Writable<"dark"|"light"> = writable("dark")
@@ -13,7 +14,7 @@ export const cam:Writable<{
     expectedPosition: [0,0,0],
 })
 export const dev:Writable<boolean>=writable(true)
-
+export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
 
 //default
 const def = writable({

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { T, useFrame, PerspectiveCamera, DirectionalLight, AmbientLight, HemisphereLight, Pass, OrbitControls, Layers, useThrelte } from "@threlte/core";
-	import {ACESFilmicToneMapping, Color , Object3D, sRGBEncoding, Vector2, Vector3} from "three";
-	import {cam, controls, dev} from "$lib/stores"
-	import { Debug, World } from '@threlte/rapier'
+	import {AmbientLight, HemisphereLight, Pass, useThrelte } from "@threlte/core";
+	import {ACESFilmicToneMapping, Color, sRGBEncoding, Vector2} from "three";
+	import {cam, controls} from "$lib/stores"
+	import { World } from '@threlte/rapier'
 	import gsap from "gsap";
 	import {SMAAPass} from "three/examples/jsm/postprocessing/SMAAPass"
 	import {UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass"
@@ -10,8 +10,17 @@
 	import { RGBToHex } from "$lib/helper";
 	import Hdr from "./hdr.svelte";
 	import Camera from "./camera.svelte";
+
+	export let loaded: boolean
 	// move camera on mousemove
-	const { pointer, camera } = useThrelte()
+	const { pointer, camera, renderer, scene, advance } = useThrelte()
+	function render(){
+		advance()
+		requestAnimationFrame(render)
+	}
+	$:{
+		loaded && render()
+	}
 	function pan(e: MouseEvent){
 		return
 		if($cam.pan){
@@ -63,8 +72,6 @@
 		await tick()
 		$controls = {...$controls}
 	})
-	const {renderer} = useThrelte()
-	let smaapass: SMAAPass
 	$:{
 		if(renderer){
 			// 
@@ -73,20 +80,13 @@
 			renderer.toneMapping = ACESFilmicToneMapping
 			renderer.toneMappingExposure = 1
 			renderer.setClearColor(0x000000,1)
-			smaapass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
 		}
 	}
 	
-	const {scene} = useThrelte()
 	scene.background = new Color("rgb(10,10,10)");
 
 </script>
-{#key smaapass}
-	{#if smaapass}
-	<!-- <Pass pass={smaapass}></Pass> -->
-	<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0 )}></Pass>
-	{/if}
-{/key}
+<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0 )}></Pass>
 
 <Hdr/>
 <Camera/>

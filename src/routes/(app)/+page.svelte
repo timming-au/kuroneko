@@ -9,7 +9,7 @@
 </script>
 <div class="w-screen h-screen absolute">
     <Canvas rendererParameters={{"logarithmicDepthBuffer":true,"antialias":true}}>
-        {#if $dev}
+        {#if $dev && window}
         <Interface/>
         {/if}
         <Scene>

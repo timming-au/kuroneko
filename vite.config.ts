@@ -7,7 +7,7 @@ const config: UserConfig = {
 	ssr: {
 		noExternal: ['three', 'troika-three-text']
 	},
-    assetsInclude: ['**/*.gltf'],
+    assetsInclude: ['**/*.gltf','**/*.hdr'],
     resolve: {
         alias: {
 			$static: path.resolve('./static'),

@@ -4,8 +4,9 @@
 	import { useGltf } from "@threlte/extras";
 	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
 	import type { Group } from "three";
-    
-	const { gltf } = useGltf('src/assets/models/nekocom.gltf')
+
+	const gltfUrl = new URL('$src/assets/models/nekocom.gltf', import.meta.url).href
+	const { gltf } = useGltf(gltfUrl)
 
     export let rigidBodyType: RigidBodyTypeString
     export let obj:Group

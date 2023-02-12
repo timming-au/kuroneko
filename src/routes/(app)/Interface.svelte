@@ -1,6 +1,6 @@
 <script lang="ts">
     import { controls } from "$lib/stores";
-    import { GUI } from 'dat.gui'
+    import type { GUI } from 'dat.gui'
 	import { onMount } from "svelte";
 	import { onDestroy } from "svelte";
     import { tick } from "svelte";
@@ -8,7 +8,8 @@
 
     onMount(async()=>{
         await tick()
-        gui = new GUI()
+        let dat = await import('dat.gui')
+        gui = new dat.GUI()
         
         // com light
         const comFolder = gui.addFolder('comLight')

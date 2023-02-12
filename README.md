@@ -1,4 +1,6 @@
 # kuroneko
 Nya! A neko based world in early stages of development
-## Run
-Download/clone the repository, then run `npm install`
+## Running locally
+1. Download/clone the repository
+2. `npm install`
+3. `npm run dev`

@@ -8,6 +8,7 @@
 	import { RGBToString } from "$lib/helper";
 	import { PolyhedronFactory } from "./Factory";
 	import { mat_pink } from "./nekocom/Materials";
+	import Planet from "./Planet.svelte";
 
     const {scene} = useThrelte()
 	// light helper
@@ -51,6 +52,6 @@
 {:else}
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
-
+<Planet scale={5}></Planet>
 <Nekocom bind:obj={nekoComObj}/>
 

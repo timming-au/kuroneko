@@ -1,26 +1,19 @@
 <script lang="ts">
 	import {AmbientLight, HemisphereLight, Pass, useThrelte } from "@threlte/core";
-	import {ACESFilmicToneMapping, Color, sRGBEncoding, Vector2} from "three";
+	import {Color, GridHelper, Vector2} from "three";
 	import {cam, controls} from "$lib/stores"
 	import { World } from '@threlte/rapier'
 	import gsap from "gsap";
-	import {SMAAPass} from "three/examples/jsm/postprocessing/SMAAPass"
 	import {UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass"
-	import { onMount, tick } from "svelte";
 	import { RGBToHex } from "$lib/helper";
 	import Hdr from "./hdr.svelte";
 	import Camera from "./camera.svelte";
+	import Renderer from "./Renderer.svelte";
+	import Controls from "./Controls.svelte"
 
 	export let loaded: boolean
 	// move camera on mousemove
-	const { pointer, camera, renderer, scene, advance } = useThrelte()
-	function render(){
-		advance()
-		requestAnimationFrame(render)
-	}
-	$:{
-		loaded && render()
-	}
+	const { pointer, camera,scene} = useThrelte()
 	function pan(e: MouseEvent){
 		return
 		if($cam.pan){
@@ -45,48 +38,12 @@
 		}
 	}
 	
-	onMount(()=>{
-
-		let save = localStorage.getItem("controls")
-		if(save){
-			let parse = JSON.parse(save)
-
-			/**
-			 * Recursively assign values to object from a copy to prevent changing reference
-			 * @param obj
-			 * @param copy
-			 */
-			function valueAssign(obj: {[key:string]:any}, copy:{[key:string]:any}){
-				for(let key in obj){
-					if(typeof obj[key] != 'object'){
-						obj[key] = copy[key]
-					}else{
-						valueAssign(obj[key], copy[key])
-					}
-				}
-			}
-			valueAssign($controls,parse)
-		}
-	})
-	onMount(async()=>{
-		await tick()
-		$controls = {...$controls}
-	})
-	$:{
-		if(renderer){
-			// 
-    		renderer.outputEncoding = sRGBEncoding
-			renderer.physicallyCorrectLights = true
-			renderer.toneMapping = ACESFilmicToneMapping
-			renderer.toneMappingExposure = 1
-			renderer.setClearColor(0x000000,1)
-		}
-	}
-	
 	scene.background = new Color("rgb(10,10,10)");
-
+	scene.add(new GridHelper(100,10))
 </script>
-<Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0 )}></Pass>
+<Renderer loaded={loaded}/>
+<Controls/>
+<!-- <Pass pass={new UnrealBloomPass( new Vector2( window.innerWidth, window.innerHeight ), 1, 1, 0 )}></Pass> -->
 
 <Hdr/>
 <Camera/>

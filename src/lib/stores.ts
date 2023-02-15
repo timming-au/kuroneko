@@ -1,5 +1,5 @@
 import { writable, type Writable } from "svelte/store";
-import type { RGB } from "three";
+import type { Object3D, RGB } from "three";
 import type { Graph } from "$lib/types";
 
 export const navi = writable(false)
@@ -15,7 +15,7 @@ export const cam:Writable<{
 })
 export const dev:Writable<boolean>=writable(true)
 export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
-
+export const bloomObject: Writable<[obj:Object3D,type:string]>=writable()
 //default
 const def = writable({
     com:{

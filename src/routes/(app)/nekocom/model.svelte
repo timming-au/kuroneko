@@ -10,7 +10,6 @@
 
   export let rigidBodyType: RigidBodyTypeString
   export let obj:Group
-
 </script>
 {#if $gltf}
 <RigidBody type={rigidBodyType}>
@@ -49,7 +48,7 @@
               position={[-0.59, -1.21, -0.43]}
             />
         
-            <slot />
+            <slot/>
         </T.Group>
     </AutoColliders>
 </RigidBody>

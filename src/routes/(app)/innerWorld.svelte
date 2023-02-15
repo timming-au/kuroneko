@@ -8,7 +8,7 @@
 	import { RGBToString } from "$lib/helper";
 	import { PolyhedronFactory } from "./Factory";
 	import { mat_pink } from "./nekocom/Materials";
-	import Planet from "./Planet.svelte";
+	import Planet from "./planet/Planet.svelte";
 
     const {scene} = useThrelte()
 	// light helper
@@ -26,7 +26,11 @@
 	const {camera} = useThrelte()
 	$:{
 		if(nekoComObj && $camera && $controls){
-			$camera.lookAt(nekoComObj.getWorldPosition(new Vector3()))
+			let pos = nekoComObj.getWorldPosition(new Vector3())
+			let {x,y,z} = new Vector3().copy(pos).add(new Vector3(0,0,10))
+			$camera.position.set(x,y,z)
+			$camera.lookAt(pos)
+			$camera.userData.orbitControls.target = pos
 		}
 	}
 	let nekoComObj: Group;
@@ -52,6 +56,6 @@
 {:else}
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
-<Planet scale={5}></Planet>
-<Nekocom bind:obj={nekoComObj}/>
+<Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet>
+<Nekocom bloomType="strong" comPos={[0,4.45,0]} bind:obj={nekoComObj}/>
 

@@ -10,10 +10,17 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 	import { mat_bulb, mat_glass, mat_pink } from './Materials';
 	import Model from './model.svelte';
 	import Panel from './Panel.svelte';
-	import { controls } from '$lib/stores';
+	import { bloomObject, controls } from '$lib/stores';
 	import gsap from 'gsap';
 	import Content from '../content/content.svelte';
-	
+	import type { BloomType } from '$lib/types';
+	export let bloomType: BloomType = undefined
+	$:{
+		if(bloomType && obj){
+			$bloomObject = [obj, bloomType]
+			console.log(obj.uuid)
+		}
+	}
 	export let comPos:[x: number, y: number, z: number] = [0,0,0]
   	export let obj: Group
 	let panel: Mesh
@@ -39,8 +46,8 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 
 <T.Group position={comPos} rotation={[0,Math.PI,0]}>
 	<CollisionGroups groups={[0, 15]}>
-		<Model scale={3} bind:obj={obj} rigidBodyType={"fixed"}>
-			<Panel bind:panel={panel}>
+		<Model scale={1} bind:obj={obj} rigidBodyType={"fixed"}>
+			<Panel scale={1} bind:panel={panel}>
 				<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
 			</Panel>
 		</Model>

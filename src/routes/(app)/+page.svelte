@@ -6,26 +6,44 @@
 	import { dev } from "$lib/stores";
     import "../../app.css"
 	import { DefaultLoadingManager } from "three";
+    import gsap from "gsap";
     
-    let isLoaded = false;
+    let load = {
+        done: false,
+        percent: 0,
+    }
+    
     DefaultLoadingManager.onLoad = function(){
-		isLoaded = true;
+		load.done = true;
         (document.getElementById("loading") as HTMLElement).style.display = "none";
         (document.getElementById("canvas") as HTMLElement).style.visibility = "visible";
     }
     DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-        console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+        gsap.to(load,{
+            percent: Math.round(itemsLoaded / itemsTotal * 1000) / 10,
+            duration:0.3,
+            ease: "linear",
+        })
+        // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
     };
 </script>
-<div id="loading" class="w-screen h-screen absolute">
-    Loading...
+<div id="loading" class="w-screen h-screen absolute bg-black flex items-center justify-center">
+    <p>Loading... {load.percent}%</p>
+    <div class="w-16 h-1 bg-gray-300 rounded">
+        <div class="w-[{load.percent}%] h-full bg-white rounded"></div>
+    </div>
 </div>
 <div id="canvas" class="w-screen h-screen absolute invisible">
-    <Canvas frameloop="never" rendererParameters={{"logarithmicDepthBuffer":true,"antialias":true}}>
+    <Canvas frameloop="never" rendererParameters={{
+        powerPreference: "high-performance",
+        antialias: false,
+        stencil: false,
+        depth: false
+    }}>
         {#if $dev && window}
         <Interface/>
         {/if}
-        <Scene loaded={isLoaded}>
+        <Scene loaded={load.done}>
             <InnerWorld></InnerWorld>
         </Scene>
     </Canvas>

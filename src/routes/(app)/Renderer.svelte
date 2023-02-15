@@ -37,7 +37,7 @@
             mipmapBlur: true,
             luminanceThreshold: 0.5,
             luminanceSmoothing: 0.1,
-            intensity: 0.2,
+            intensity: 1,
         });
         bloomWeak.inverted = false
         bloomWeak.selection.layer = 5

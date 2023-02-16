@@ -82,3 +82,12 @@ export const magnetise = {
         })
     },
 }
+
+export const getCentroid = (p:number[]) => {
+    let res = 0
+    const len = p.length
+    for(let i = 0; i < len; i++){
+        res += p[i]
+    }
+    return res/len
+}

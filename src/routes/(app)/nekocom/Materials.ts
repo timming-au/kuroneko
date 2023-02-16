@@ -1,12 +1,5 @@
 import { Color, MeshPhongMaterial, MeshPhysicalMaterial, MeshStandardMaterial } from "three";
 
-export const mat_nekocom_ear = new MeshStandardMaterial({
-    color: new Color("rgb(5,5,5)"),
-    emissive: new Color("rgb(20,20,20)"),
-    roughness: 0,
-    emissiveIntensity: 1,
-    flatShading: true,
-})
 
 export const mat_glass = new MeshPhysicalMaterial({
     color: 0x111111,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { useFrame, useThrelte } from "@threlte/core";
-	import { ACESFilmicToneMapping, BoxGeometry, HalfFloatType, Mesh, MeshStandardMaterial, sRGBEncoding } from "three";
-    import {Effect,BloomEffect, RenderPass, SelectiveBloomEffect, EffectPass, EffectComposer, BlendFunction} from "postprocessing"
+	import { ACESFilmicToneMapping, BoxGeometry, HalfFloatType, Mesh, MeshStandardMaterial, Object3D, sRGBEncoding } from "three";
+    import {Effect,BloomEffect, RenderPass, SelectiveBloomEffect, EffectPass, EffectComposer, BlendFunction, SMAAEffect } from "postprocessing"
 	import { onMount } from "svelte";
     import { bloomObject } from "$lib/stores";
 	import { assets } from "$internal/paths";
@@ -23,25 +23,28 @@
         bloomStrong = new SelectiveBloomEffect(scene, $camera, {
             blendFunction: BlendFunction.ADD,
             mipmapBlur: true,
-            luminanceThreshold: 0.2,
+            luminanceThreshold: 0,
             luminanceSmoothing: 0,
-            intensity: 5
+            intensity: 1,
+            radius: 0.5
         });
         bloomStrong.inverted = false
         bloomStrong.selection.layer = 6
 
-        composer.addPass(new RenderPass(scene, $camera));
         // weak bloom
         bloomWeak = new SelectiveBloomEffect(scene, $camera, {
             blendFunction: BlendFunction.ADD,
             mipmapBlur: true,
             luminanceThreshold: 0.5,
             luminanceSmoothing: 0.1,
-            intensity: 1,
+            intensity: 0.2,
+            radius: 0.2
         });
         bloomWeak.inverted = false
         bloomWeak.selection.layer = 5
-        composer.addPass(new EffectPass($camera, bloomWeak, bloomStrong));
+        composer.addPass(new EffectPass($camera,new SMAAEffect(), bloomWeak, bloomStrong));
+
+        
     })
 	function render(){
 		requestAnimationFrame(render)
@@ -51,20 +54,29 @@
 	$:{
 		loaded && render()
 	}
-    $:{
-        if($bloomObject)
-        if($bloomObject[1] == "strong" && bloomStrong){
-            $bloomObject[0].traverse((child)=>{
-                bloomStrong.selection.toggle(child)
+    function traverseWithoutParent(objects:Object3D[] = [], object: Object3D): Object3D[]{
+        if(object.children.length > 0){
+            object.children.forEach((child)=>{
+                traverseWithoutParent(objects, child)
             })
-            console.log(bloomStrong.selection)
+        }else{
+            objects.push(object)
         }
-        else if($bloomObject[1] == "weak" && bloomWeak){
-            
-            $bloomObject[0].children.forEach((child)=>{
-                bloomWeak.selection.toggle(child)
-            })
-            console.log(bloomWeak.selection)
+        return objects
+    }
+    $:{
+        if($bloomObject){
+
+            if($bloomObject[1] == "strong" && bloomStrong){
+                traverseWithoutParent(undefined,$bloomObject[0]).forEach((object)=>{
+                    bloomStrong.selection.toggle(object)
+                })
+            }
+            if($bloomObject[1] == "weak" && bloomWeak){
+                traverseWithoutParent(undefined,$bloomObject[0]).forEach((object)=>{
+                    bloomWeak.selection.toggle(object)
+                })
+            }
         }
     }
 	$:{

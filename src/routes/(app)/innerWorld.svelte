@@ -57,6 +57,6 @@
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
 <!-- <Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet> -->
-<Planet position={[0,0,0]} bloomType="weak" scale={7}></Planet>
+<Planet position={[0,0,0]} bloomType="weak" scale={10}></Planet>
 <Nekocom bloomType="strong" comPos={[0,4.45,0]} bind:obj={nekoComObj}/>
 

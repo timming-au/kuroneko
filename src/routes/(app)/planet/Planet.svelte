@@ -8,7 +8,7 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
   import type {BloomType} from "$lib/types"
   import { bloomObject } from '$lib/stores';
 	import type{Mesh} from 'three';
-	import Trees from '../Trees.svelte';
+	import Trees from '../trees/Trees.svelte';
 
 	const gltfUrl = new URL('$src/assets/models/planet/planett.gltf', import.meta.url).href
   const { gltf } = useGltf(gltfUrl, { useDraco: true })

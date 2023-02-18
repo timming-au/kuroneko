@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { useFrame, useThrelte } from "@threlte/core";
-	import { ACESFilmicToneMapping, BoxGeometry, HalfFloatType, Mesh, MeshStandardMaterial, Object3D, sRGBEncoding } from "three";
-    import {Effect,BloomEffect, RenderPass, SelectiveBloomEffect, EffectPass, EffectComposer, BlendFunction, SMAAEffect } from "postprocessing"
+	import { bloomObject } from "$lib/stores";
+	import { useThrelte } from "@threlte/core";
+	import { BlendFunction, EffectComposer, EffectPass, RenderPass, SelectiveBloomEffect, SMAAEffect } from "postprocessing";
 	import { onMount } from "svelte";
-    import { bloomObject } from "$lib/stores";
-	import { assets } from "$internal/paths";
+	import { ACESFilmicToneMapping, HalfFloatType, Object3D, sRGBEncoding } from "three";
 
     export let loaded:boolean
     const { renderer, advance, scene, camera } = useThrelte()

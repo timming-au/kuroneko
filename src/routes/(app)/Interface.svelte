@@ -1,9 +1,7 @@
 <script lang="ts">
     import { controls } from "$lib/stores";
-    import type { GUI } from 'dat.gui'
-	import { onMount } from "svelte";
-	import { onDestroy } from "svelte";
-    import { tick } from "svelte";
+    import type { GUI } from 'dat.gui';
+    import { onDestroy, onMount, tick } from "svelte";
     let gui: GUI
 
     onMount(async()=>{

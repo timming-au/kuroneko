@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { InteractiveObject, T } from "@threlte/core";
-    import { useThrelte } from "@threlte/core";
-	import { BoxGeometry, Color, DirectionalLightHelper, Group, MeshStandardMaterial, Vector3 } from "three";
-	
-	import Nekocom from "./nekocom/Nekocom.svelte";
-	import { controls, dev } from "$lib/stores";
+	import { T, useThrelte } from "@threlte/core";
+	import { DirectionalLightHelper, Group, Vector3 } from "three";
 	import { RGBToString } from "$lib/helper";
-	import { PolyhedronFactory } from "./Factory";
-	import { mat_pink } from "./nekocom/Materials";
+	import { controls, dev } from "$lib/stores";
+	import Nekocom from "./nekocom/Nekocom.svelte";
 	import Planet from "./planet/Planet.svelte";
 	import Sun from "./sun/Sun.svelte";
 

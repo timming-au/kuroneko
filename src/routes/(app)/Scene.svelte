@@ -1,15 +1,14 @@
 <script lang="ts">
-	import {AmbientLight, HemisphereLight, Pass, useThrelte } from "@threlte/core";
-	import {Color, GridHelper, Vector2} from "three";
-	import {cam, controls} from "$lib/stores"
-	import { World } from '@threlte/rapier'
-	import gsap from "gsap";
-	import {UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass"
 	import { RGBToHex } from "$lib/helper";
-	import Hdr from "./hdr.svelte";
+	import { cam, controls } from "$lib/stores";
+	import { AmbientLight, HemisphereLight, useThrelte } from "@threlte/core";
+	import { World } from '@threlte/rapier';
+	import gsap from "gsap";
+	import { Color, GridHelper } from "three";
 	import Camera from "./camera.svelte";
+	import Controls from "./Controls.svelte";
+	import Hdr from "./hdr.svelte";
 	import Renderer from "./Renderer.svelte";
-	import Controls from "./Controls.svelte"
 
 	export let loaded: boolean
 	// move camera on mousemove

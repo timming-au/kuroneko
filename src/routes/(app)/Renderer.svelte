@@ -10,15 +10,25 @@
     const { renderer, advance, scene, camera } = useThrelte()
     let bloomStrong: SelectiveBloomEffect
     let bloomWeak: SelectiveBloomEffect
+    let bloomSun: SelectiveBloomEffect
     let composer:EffectComposer 
-    let selectiveBlooms: SelectiveBloomEffect[] = []
-    let pass: EffectPass
     onMount(()=>{
         composer = new EffectComposer(renderer,{
             frameBufferType: HalfFloatType
         });
         composer.addPass(new RenderPass(scene, $camera));
 
+        // sun bloom
+        bloomSun = new SelectiveBloomEffect(scene, $camera, {
+            blendFunction: BlendFunction.ADD,
+            mipmapBlur: true,
+            luminanceThreshold: 0,
+            luminanceSmoothing: 0,
+            intensity: 10,
+            radius: 0.5
+        });
+        bloomSun.inverted = false
+        bloomSun.selection.layer = 7
         // strong bloom
         bloomStrong = new SelectiveBloomEffect(scene, $camera, {
             blendFunction: BlendFunction.ADD,
@@ -42,7 +52,7 @@
         });
         bloomWeak.inverted = false
         bloomWeak.selection.layer = 5
-        composer.addPass(new EffectPass($camera,new SMAAEffect(), bloomWeak, bloomStrong));
+        composer.addPass(new EffectPass($camera,new SMAAEffect(), bloomWeak, bloomStrong, bloomSun));
 
         
     })
@@ -66,7 +76,12 @@
     }
     $:{
         if($bloomObject){
-
+            console.log($bloomObject)
+            if($bloomObject[1] == "sun" && bloomSun){
+                traverseWithoutParent(undefined,$bloomObject[0]).forEach((object)=>{
+                    bloomSun.selection.toggle(object)
+                })
+            }
             if($bloomObject[1] == "strong" && bloomStrong){
                 traverseWithoutParent(undefined,$bloomObject[0]).forEach((object)=>{
                     bloomStrong.selection.toggle(object)

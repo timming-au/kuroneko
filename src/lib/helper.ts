@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import gsap from "gsap";
-import type {RGB} from "three"
+import { DoubleSide, ShaderLib, ShaderMaterial, UniformsUtils, type Mesh, type RGB } from "three";
 /**
  * Takes in RGB object 
  * @param color 
@@ -91,3 +92,114 @@ export const getCentroid = (p:number[]) => {
     }
     return res/len
 }
+
+// // shamelessly stolen code from https://codepen.io/nicoptere/pen/gxzeOE because I don't know how shaders work
+// const extendedMaterial = function ( material: any, uniforms: any, hooks: any, debug?:boolean ) {
+
+//     let changed = false;
+//     material.onBeforeCompile = function ( shader: any ) {
+
+//         if( Boolean( changed ) === true )return;
+//         changed = true;
+
+//         let vertexShader = shader.vertexShader;
+//         let fragmentShader = shader.fragmentShader;
+
+//         if( uniforms !== undefined ){
+
+//             let uniformName = '';
+//             let uniformDeclaration = '';
+//             uniforms.forEach(function( uniform: any ){
+
+//                 //retrieve the name of the uniform
+//                 for( const key in uniform ) uniformName = key;
+
+//                 //retrieve the type of the uniform
+//                 switch( uniform[ uniformName ].type ){
+//                     case "f":
+//                         uniformDeclaration += 'uniform float '+uniformName+';';
+//                         break;
+//                     case "v2":
+//                         uniformDeclaration += 'uniform vec2 '+uniformName+';';
+//                         break;
+//                     case "v3":
+//                         uniformDeclaration += 'uniform vec3 '+uniformName+';';
+//                         break;
+//                     case "v4":
+//                         uniformDeclaration += 'uniform vec4 '+uniformName+';';
+//                         break;
+//                 }
+//                 uniformDeclaration += "\n";
+
+//                 //merge this uniforms to the existing ones
+//                 shader.uniforms = UniformsUtils.merge([shader.uniforms, uniform ]);
+
+//             });
+
+//             //appends the uniforms declarations to the shader
+//             vertexShader = uniformDeclaration + shader.vertexShader;
+
+//             //creates a shortcut to the uniforms on the material for later update
+//             this.uniforms = shader.uniforms;
+//         }
+
+//         //hack the shaders' text content
+//         if( hooks !== undefined ){
+
+//             hooks.forEach(function( hook: any ){
+
+//                 const needle = hook.needle;
+
+//                 const vertex = hook.vertex;
+//                 if( vertex !== undefined && vertex !== '' ){
+//                     vertexShader = vertexShader.replace( needle, vertex );
+//                 }
+
+//                 const fragment = hook.fragment;
+//                 if( fragment !== undefined && fragment !== '' ){
+//                     fragmentShader = fragmentShader.replace( needle, fragment );
+//                 }
+//             } );
+//         }
+
+//         shader.vertexShader = vertexShader;
+//         shader.fragmentShader = fragmentShader;
+
+//         if( Boolean(debug)===true ){
+//             console.log( 'vertexShader:' );
+//             console.log( vertexShader );
+//             console.log( 'fragmentShader:' );
+//             console.log( fragmentShader );
+//         }
+//     };
+//     return material;
+
+// };
+// const uniforms = [
+//     { time : { type:"f", value: 0 } },
+//     { radius : { type:"f", value: 0 } }
+// ];
+
+// const shader = [
+//     {
+//       needle:'#include <begin_vertex>', 
+//       vertex:'vec3 transformed = position + offset * (1.+abs( sin( time ) ) * radius );' 
+//     },
+//     { 
+//       needle:new RegExp(/.*void.*main/), 
+//       vertex:'attribute vec3 offset;\nvoid main'
+//     }
+// ];
+// export function enableShadows(mesh: Mesh){
+//     //ask it to cast / receive shadows
+//     mesh.castShadow = true;
+
+//     //only the original cube is casting a shadow ; we need the depthMaterial to position instances too
+//     // > also hacks the depth material
+
+//     // mesh.customDepthMaterial = extendedMaterial(new ShaderMaterial( {
+//     //     vertexShader: ShaderLib.depth.vertexShader,
+//     //     fragmentShader:"#define DEPTH_PACKING 3201\n" + ShaderLib.depth.fragmentShader,
+//     //     side: DoubleSide
+//     // } ),    uniforms,shader);
+// }

@@ -18,7 +18,6 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 	$:{
 		if(bloomType && obj){
 			$bloomObject = [obj, bloomType]
-			console.log(obj.uuid)
 		}
 	}
 	export let comPos:[x: number, y: number, z: number] = [0,0,0]

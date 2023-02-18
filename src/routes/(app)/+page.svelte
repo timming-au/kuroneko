@@ -5,7 +5,7 @@
 	import Interface from "./Interface.svelte";
 	import { dev } from "$lib/stores";
     import "../../app.css"
-	import { DefaultLoadingManager } from "three";
+	import { DefaultLoadingManager, PCFSoftShadowMap } from "three";
     import gsap from "gsap";
     
     let load = {
@@ -34,11 +34,11 @@
     </div>
 </div>
 <div id="canvas" class="w-screen h-screen absolute invisible">
-    <Canvas frameloop="never" rendererParameters={{
+    <Canvas shadowMapType={PCFSoftShadowMap} frameloop="never" rendererParameters={{
         powerPreference: "high-performance",
         antialias: false,
         stencil: false,
-        depth: false
+        depth: false,
     }}>
         {#if $dev && window}
         <Interface/>

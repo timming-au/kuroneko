@@ -5,4 +5,4 @@ export type Graph = {
 	nodes: Record<string, any>
 	materials: Record<string, any>
 }
-export type BloomType = "weak" | "strong" | undefined
+export type BloomType = "weak" | "strong" | "sun" | undefined

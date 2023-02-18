@@ -1,15 +1,26 @@
 <script lang="ts">
-	import { parse } from 'cookie';
-	import { BoxGeometry, BufferGeometry, InstancedMesh, Material, Matrix4, Mesh, MeshBasicMaterial, Object3D, Vector3, type BufferAttribute, type Event as Event3 } from 'three';
-	import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+	import { BufferGeometry, InstancedMesh, Material, Mesh, MeshDistanceMaterial, Object3D, Vector3 } from 'three';
+	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler';
-    import { treesMaterial } from './Materials';
+	import { treesMaterial } from './Materials';
 
     export let planetObject: Mesh;
 
+    type Tree = {
+        [name:string]:{
+            branch:{
+                geometry:BufferGeometry | undefined,
+                material:Material | undefined
+            },
+            leaf:{
+                geometry:BufferGeometry | undefined,
+                material:Material | undefined
+            }
+        }
+    }
     let loader = new GLTFLoader()
     let gltf: Mesh[]
-	const gltfUrl = new URL('$src/assets/models/trees/treestest.gltf', import.meta.url).href
+	const gltfUrl = new URL('$src/assets/models/trees/trees.gltf', import.meta.url).href
 	loader.load(gltfUrl,(models)=>{
         gltf = models.scene.children as Mesh[]
     })
@@ -31,18 +42,7 @@
         let semisnow = planetObject.children[4] as Mesh
         let grass = planetObject.children[5] as Mesh
         const trees:{
-            [type:string]:{
-                [name:string]:{
-                    branch:{
-                        geometry:BufferGeometry | undefined,
-                        material:Material | undefined
-                    },
-                    leaf:{
-                        geometry:BufferGeometry | undefined,
-                        material:Material | undefined
-                    }
-                }
-            },
+            [type:string]:Tree,
         } = {}
         // 
         Object.values(models).map(obj=>{
@@ -65,9 +65,8 @@
                 }
                 if(part == "branch" || part == "leaf"){
                     trees[type][name][part].geometry = obj.geometry
-                    trees[type][name][part].geometry!.scale(0.1,0.1,0.1)
-                    trees[type][name][part].geometry!.rotateX(-Math.PI)
-                    trees[type][name][part].geometry!.translate(0,2,0)
+                    trees[type][name][part].geometry!.rotateX(-Math.PI/2)
+                    treesMaterial[type][part].envMapIntensity = 0.1
                     trees[type][name][part].material = treesMaterial[type][part]
                 }else{
                     console.log("unknown part:",part)
@@ -75,27 +74,43 @@
             }
         })
         
-        for(let name in trees.tree){
-            let tree = trees.tree[name]
+        scatterTrees(10,trees.tree,0.05,"_tree",grass)
+        scatterTrees(6,trees.sakura,0.05,"_sakura",grass)
+    }   
+    
+    
+    function scatterTrees(count: number, treeObj: Tree, maxScale: number, weightName: string, meshSurface: Mesh){
+        for(let name in treeObj){
+            let tree = treeObj[name]
             // instantiate trees
-            let sampler = new MeshSurfaceSampler( grass )
-            .setWeightAttribute("_tree")
+            let sampler = new MeshSurfaceSampler( meshSurface )
+            .setWeightAttribute(weightName)
             .build();
-            let count = 5
             let branch = new InstancedMesh( tree.branch.geometry, tree.branch.material, count );
             let leaf = new InstancedMesh( tree.leaf.geometry, tree.leaf.material, count );
+            
+            branch.castShadow = true
+            leaf.castShadow = true
+
             const position = new Vector3();
 
             // Sample randomly from the surface, creating an instance of the sample
             // geometry at each sample point.
             let dummy = new Object3D()
             
-            for ( let i = 0; i < count; i ++ ) {
+            for ( let i = 0; i < count; i++ ) {
                 let normal: Vector3 = new Vector3()
-                sampler.sample( position, normal );
+
+                sampler.sample( position, normal);
 
                 dummy.position.set(...position.toArray());
                 dummy.lookAt(normal)
+                dummy.rotateZ(Math.random()*Math.PI*2)
+
+                let [x,y] = dummy.rotation
+                let scale = [x,y].map(rotation => (Math.abs(Math.sin(parseFloat(rotation.toString())))/4+0.75)**2).reduce( (a, b) => (a + b) )*maxScale-maxScale/5*Math.random()
+                
+                dummy.scale.set(scale,scale,scale)
                 dummy.updateMatrix()
 
                 branch.setMatrixAt( i, dummy.matrix );
@@ -107,6 +122,5 @@
             planetObject.add(branch);	
             planetObject.add(leaf);	
         }
-       
     }
 </script>

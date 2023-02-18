@@ -9,6 +9,7 @@
 	import { PolyhedronFactory } from "./Factory";
 	import { mat_pink } from "./nekocom/Materials";
 	import Planet from "./planet/Planet.svelte";
+	import Sun from "./sun/Sun.svelte";
 
     const {scene} = useThrelte()
 	// light helper
@@ -57,6 +58,7 @@
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
 <!-- <Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet> -->
-<Planet position={[0,0,0]} bloomType="weak" scale={10}></Planet>
-<Nekocom bloomType="strong" comPos={[0,4.45,0]} bind:obj={nekoComObj}/>
+<Sun position={[30,50,200]}/>
+<Planet position={[0,0,0]} bloomType="weak" scale={4}></Planet>
+<Nekocom bloomType="strong" comPos={[0,14.1,0]} bind:obj={nekoComObj}/>
 

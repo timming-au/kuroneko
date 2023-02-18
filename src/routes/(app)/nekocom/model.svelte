@@ -10,6 +10,15 @@
 
   export let rigidBodyType: RigidBodyTypeString
   export let obj:Group
+  $:{
+    if(obj){
+      obj.traverse((child)=>{
+        if(child.isMesh){
+          child.castShadow = true
+        }
+      })
+    }
+  }
 </script>
 {#if $gltf}
 <RigidBody type={rigidBodyType}>

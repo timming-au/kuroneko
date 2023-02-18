@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { T, useThrelte } from "@threlte/core";
+	import { T, useFrame, useThrelte } from "@threlte/core";
 	import { DirectionalLightHelper, Group, Vector3 } from "three";
 	import { RGBToString } from "$lib/helper";
 	import { controls, dev } from "$lib/stores";
@@ -7,7 +7,7 @@
 	import Planet from "./planet/Planet.svelte";
 	import Sun from "./sun/Sun.svelte";
 
-    const {scene} = useThrelte()
+    const {scene, camera} = useThrelte()
 	// light helper
 	let directionalLight: any;
 	let helper: DirectionalLightHelper
@@ -20,11 +20,10 @@
 			scene.add( helper );
         }
     }
-	const {camera} = useThrelte()
 	$:{
-		if(nekoComObj && $camera && $controls){
+		if(nekoComObj && $camera){
 			let pos = nekoComObj.getWorldPosition(new Vector3())
-			let {x,y,z} = new Vector3().copy(pos).add(new Vector3(0,0,10))
+			let {x,y,z} = new Vector3().copy(pos).add(new Vector3(0,0,3))
 			$camera.position.set(x,y,z)
 			$camera.lookAt(pos)
 			$camera.userData.orbitControls.target = pos
@@ -54,7 +53,8 @@
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if}
 <!-- <Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet> -->
-<Sun position={[30,50,200]}/>
-<Planet position={[0,0,0]} bloomType="weak" scale={4}></Planet>
-<Nekocom bloomType="strong" comPos={[0,14.1,0]} bind:obj={nekoComObj}/>
+<Sun position={[30,50,50]}/>
+<Planet rotate position={[0,0,0]} bloomType="weak" scale={4}>
+	<Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}/>
+</Planet>
 

@@ -42,31 +42,32 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 		}) 
 	}
 </script>
-
-<T.Group position={comPos} rotation={[0,Math.PI,0]}>
-	<CollisionGroups groups={[0, 15]}>
-		<Model scale={1} bind:obj={obj} rigidBodyType={"fixed"}>
-			<Panel scale={1} bind:panel={panel}>
-				<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
-			</Panel>
-		</Model>
-	</CollisionGroups>
-	
-	<CollisionGroups groups={[0]}>
-		<RigidBody>
-			<AutoColliders>
-				<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
+<T.Group position={comPos} {...$$restProps}>
+	<T.Group rotation={[0,Math.PI,0]}>
+		<CollisionGroups groups={[0, 15]}>
+			<Model bind:obj={obj} rigidBodyType={"fixed"}>
+				<Panel scale={$$props.scale} bind:panel={panel}>
+					<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
+				</Panel>
+			</Model>
+		</CollisionGroups>
+		
+		<CollisionGroups groups={[0]}>
+			<RigidBody>
+				<AutoColliders>
+					<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
+				</AutoColliders>
+			</RigidBody>
+			<RigidBody>
+				<AutoColliders>
+			  <T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
+			  </T.Mesh>
 			</AutoColliders>
-		</RigidBody>
-		<RigidBody>
-			<AutoColliders>
-		  <T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
-		  </T.Mesh>
-		</AutoColliders>
-	  </RigidBody> 
-	</CollisionGroups>
+		  </RigidBody> 
+		</CollisionGroups>
+	</T.Group>
+	
+	<T.Mesh position={[5,10,-20]} let:ref geometry={PolyhedronFactory.getRand()} material={mat_pink}>
+		<InteractiveObject interactive object={ref} on:pointerleave={()=>document.documentElement.style.cursor = 'default'} on:pointerenter={()=>document.documentElement.style.cursor = 'pointer'} on:click={()=>screenSwitch()}/>
+	</T.Mesh>
 </T.Group>
-
-<T.Mesh position={[5,10,-20]} let:ref geometry={PolyhedronFactory.getRand()} material={mat_pink}>
-	<InteractiveObject interactive object={ref} on:pointerleave={()=>document.documentElement.style.cursor = 'default'} on:pointerenter={()=>document.documentElement.style.cursor = 'pointer'} on:click={()=>screenSwitch()}/>
-</T.Mesh>

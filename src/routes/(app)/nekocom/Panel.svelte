@@ -16,7 +16,6 @@
     const {scene} = useThrelte()
     $:{
         if(scene && panel_0){
-
             scene.add(new RectAreaLightHelper(panel_0))
         }
     }
@@ -28,10 +27,10 @@
         }
     }
 </script>
-<T.Group {...$$restProps} position={[0,0,-0.8]}>
+<T.Group position={[0,0,-0.8]}>
     <T.Mesh bind:ref={panel} geometry={new BoxGeometry(1.6,1.6,0.1)} material={mat_glass}>
-        <T.RectAreaLight bind:ref={panel_0} color={"rgb(252, 81, 138)"} power={500} position={[0,0,0]} width={1.6} height={1.6} intensity={3} rotation={[0,Math.PI,0]}/>
-        <T.RectAreaLight bind:ref={panel_1} color={"rgb(252, 81, 138)"} power={500} position={[0,0,0]} width={1.6} height={1.6} intensity={3} rotation={[0,0,0]}/>
+        <T.RectAreaLight bind:ref={panel_0} color={"rgb(252, 81, 138)"} power={500} position={[0,0,0]} width={6.5 * ($$props.scale ? $$props.scale : 1)} height={6.5 * ($$props.scale ? $$props.scale : 1)} intensity={3} rotation={[0,Math.PI,0]}/>
+        <T.RectAreaLight bind:ref={panel_1} color={"rgb(252, 81, 138)"} power={500} position={[0,0,0]} width={6.5 * ($$props.scale ? $$props.scale : 1)} height={6.5 * ($$props.scale ? $$props.scale : 1)} intensity={3} rotation={[0,0,0]}/>
     </T.Mesh>
     <slot/>
 </T.Group>

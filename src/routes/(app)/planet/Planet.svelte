@@ -5,14 +5,27 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
 <script lang="ts">
   import { bloomObject } from '$lib/stores';
   import type { BloomType } from "$lib/types";
-  import { T } from '@threlte/core';
+  import { T, useFrame } from '@threlte/core';
   import { useGltf } from '@threlte/extras';
-  import type { Mesh } from 'three';
+  import { BackSide, DoubleSide, FrontSide, Vector3, type Mesh } from 'three';
   import Trees from '../trees/Trees.svelte';
 
 	const gltfUrl = new URL('$src/assets/models/planet/planett.gltf', import.meta.url).href
   const { gltf } = useGltf(gltfUrl, { useDraco: true })
   export let bloomType: BloomType = undefined
+  export let rotate: boolean = false
+  
+	useFrame((ctx,delta)=>{
+    update(delta)
+	})
+
+	function update(delta: number){
+    let scale = 1000*delta
+		if(rotate && $gltf && obj){
+      obj.rotateOnAxis(new Vector3(0,1,0),0.0001*scale)
+    }
+	}
+
   let obj: Mesh
   $:{
     if(bloomType && obj){
@@ -23,28 +36,29 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
     if($gltf){
       for(let mat in $gltf.materials){
         $gltf.materials[mat].envMapIntensity = 0.1
+        $gltf.materials[mat].side = DoubleSide
       }
     }
   }
 </script>
 
 {#if $gltf}
-  <T.Mesh receiveShadow  rotation={[0,1,0]} bind:ref={obj} {...$$restProps} name="planet">
-    <T.Mesh receiveShadow name="Icosphere013" geometry={$gltf.nodes.Icosphere013.geometry} material={$gltf.materials.water} />
+  <T.Mesh receiveShadow castShadow rotation={[0,0,0]} bind:ref={obj} {...$$restProps} name="planet">
+    <T.Mesh receiveShadow castShadow name="Icosphere013" geometry={$gltf.nodes.Icosphere013.geometry} material={$gltf.materials.water} />
     <T.Mesh receiveShadow
-      name="Icosphere013_1"
+castShadow        name="Icosphere013_1"
       geometry={$gltf.nodes.Icosphere013_1.geometry}
       material={$gltf.materials['deep water']}
     />
     <T.Mesh receiveShadow
-      name="Icosphere013_2"
+castShadow        name="Icosphere013_2"
       geometry={$gltf.nodes.Icosphere013_2.geometry}
       material={$gltf.materials.deepdeepwater}
     />
-    <T.Mesh receiveShadow name="Icosphere013_3" geometry={$gltf.nodes.Icosphere013_3.geometry} material={$gltf.materials.Snow} />
-    <T.Mesh receiveShadow name="Icosphere013_4" geometry={$gltf.nodes.Icosphere013_4.geometry} material={$gltf.materials.semisnow} />
-    <T.Mesh receiveShadow name="Icosphere013_5" geometry={$gltf.nodes.Icosphere013_5.geometry} material={$gltf.materials.grass} />
-    <T.Mesh receiveShadow name="Icosphere013_6" geometry={$gltf.nodes.Icosphere013_6.geometry} material={$gltf.materials.grassside} />
+    <T.Mesh receiveShadow castShadow  name="Icosphere013_3" geometry={$gltf.nodes.Icosphere013_3.geometry} material={$gltf.materials.Snow} />
+    <T.Mesh receiveShadow castShadow  name="Icosphere013_4" geometry={$gltf.nodes.Icosphere013_4.geometry} material={$gltf.materials.semisnow} />
+    <T.Mesh receiveShadow castShadow  name="Icosphere013_5" geometry={$gltf.nodes.Icosphere013_5.geometry} material={$gltf.materials.grass} />
+    <T.Mesh receiveShadow castShadow  name="Icosphere013_6" geometry={$gltf.nodes.Icosphere013_6.geometry} material={$gltf.materials.grassside} />
     <Trees planetObject={obj}/>
     <slot/>
   </T.Mesh>

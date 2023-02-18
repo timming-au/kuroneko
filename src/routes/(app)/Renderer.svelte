@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { bloomObject } from "$lib/stores";
 	import { useThrelte } from "@threlte/core";
-	import { BlendFunction, EffectComposer, EffectPass, RenderPass, SelectiveBloomEffect, SMAAEffect } from "postprocessing";
+	import { BlendFunction, DepthDownsamplingPass, EffectComposer, EffectPass, NormalPass, RenderPass, SelectiveBloomEffect, SMAAEffect, SSAOEffect, TextureEffect } from "postprocessing";
 	import { onMount } from "svelte";
 	import { ACESFilmicToneMapping, HalfFloatType, Object3D, sRGBEncoding } from "three";
 
@@ -52,8 +52,6 @@
         bloomWeak.inverted = false
         bloomWeak.selection.layer = 5
         composer.addPass(new EffectPass($camera,new SMAAEffect(), bloomWeak, bloomStrong, bloomSun));
-
-        
     })
 	function render(){
 		requestAnimationFrame(render)
@@ -75,7 +73,6 @@
     }
     $:{
         if($bloomObject){
-            console.log($bloomObject)
             if($bloomObject[1] == "sun" && bloomSun){
                 traverseWithoutParent(undefined,$bloomObject[0]).forEach((object)=>{
                     bloomSun.selection.toggle(object)

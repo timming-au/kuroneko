@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { BufferGeometry, InstancedMesh, Material, Mesh, MeshDistanceMaterial, Object3D, Vector3 } from 'three';
+	import { BackSide, BufferGeometry, DoubleSide, FrontSide, InstancedMesh, Material, Mesh, MeshDistanceMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler';
 	import { treesMaterial } from './Materials';
+    import { envIntensity } from '$lib/stores';
 
     export let planetObject: Mesh;
 
@@ -26,6 +27,9 @@
     })
     $:{
         if(planetObject && gltf){
+            gltf.forEach((mesh:Mesh)=>{
+                (mesh.material as MeshStandardMaterial).envMapIntensity = $envIntensity
+            })
             render()
         }
     }
@@ -91,6 +95,8 @@
             
             branch.castShadow = true
             leaf.castShadow = true
+            branch.receiveShadow = true
+            leaf.receiveShadow = true
 
             const position = new Vector3();
 

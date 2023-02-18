@@ -5,10 +5,10 @@
     const {renderer} = useThrelte()
 </script>
 
-<PerspectiveCamera position={{x:0,y:0,z:5}} fov={60}>
+<PerspectiveCamera position={{x:500,y:500,z:500}} fov={75}>
     {#if $dev}
     <OrbitControls
-    target={{ y: 0 }}
+    target={{ y: 1000 }}
     maxPolarAngle={360 * DEG2RAD}
     minPolarAngle={0 * DEG2RAD}
     maxAzimuthAngle={180 * DEG2RAD}

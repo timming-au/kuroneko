@@ -16,6 +16,7 @@ export const cam:Writable<{
 export const dev:Writable<boolean>=writable(true)
 export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
 export const bloomObject: Writable<[obj:Object3D,type:string]>=writable()
+export const envIntensity: Writable<number>= writable(0.01)
 //default
 const def = writable({
     com:{

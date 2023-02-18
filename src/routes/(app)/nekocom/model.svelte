@@ -3,7 +3,7 @@
   import { T, Three } from "@threlte/core";
 	import { useGltf } from "@threlte/extras";
 	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
-	import type { Group } from "three";
+	import type { Group, Mesh } from "three";
 
 	const gltfUrl = new URL('$src/assets/models/nekocom/nekocom.gltf', import.meta.url).href
 	const { gltf } = useGltf(gltfUrl)
@@ -13,8 +13,9 @@
   $:{
     if(obj){
       obj.traverse((child)=>{
-        if(child.isMesh){
-          child.castShadow = true
+        let c = child as Mesh
+        if(c.isMesh){
+          c.castShadow = true
         }
       })
     }

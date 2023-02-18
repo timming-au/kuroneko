@@ -23,8 +23,8 @@
             mipmapBlur: true,
             luminanceThreshold: 0,
             luminanceSmoothing: 0,
-            intensity: 10,
-            radius: 0.5
+            intensity: 50,
+            radius: 0.6
         });
         bloomSun.inverted = false
         bloomSun.selection.layer = 7

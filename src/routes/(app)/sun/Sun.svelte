@@ -1,7 +1,7 @@
 <script lang="ts">
 
 	import { PointLight, T, useFrame, useThrelte } from "@threlte/core";
-	import { Group, Mesh, MeshPhongMaterial, PointLightHelper, SphereGeometry, Vector2, Vector3, type PointLight as PointLight3 } from "three";
+	import { Group, IcosahedronGeometry, Mesh, MeshPhongMaterial, PointLightHelper, SphereGeometry, Vector2, Vector3, type PointLight as PointLight3 } from "three";
 	import { mat_sun } from "./Materials";
     export const type = new Group();
     import type { BloomType } from '$lib/types';
@@ -82,10 +82,15 @@
 			$bloomObject = [obj, bloomType]
 		}
 	}
+    useFrame((_,delta)=>{
+        if(obj){
+            obj.rotateOnAxis(new Vector3(0,0,1),1*delta)
+        }
+    })
     let radius = 5
 </script>
 <T.Mesh bind:ref={obj} {...$$restProps}>
-    <T.Mesh geometry={new SphereGeometry(radius,24,24)} material={mat_sun}></T.Mesh>
+    <T.Mesh geometry={new IcosahedronGeometry(radius,2)} material={mat_sun}></T.Mesh>
 </T.Mesh>
 {#if obj}
 <PointLight shadow color={0xff7e33} position={obj.position} power={500} intensity={50000} bind:light={light}></PointLight>

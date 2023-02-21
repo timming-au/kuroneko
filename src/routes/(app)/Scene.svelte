@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { RGBToHex } from "$lib/helper";
 	import { cam, controls } from "$lib/stores";
-	import { AmbientLight, HemisphereLight, useThrelte } from "@threlte/core";
+	import { AmbientLight, HemisphereLight, useThrelte, Fog } from "@threlte/core";
 	import { World } from '@threlte/rapier';
 	import gsap from "gsap";
-	import { Color, GridHelper } from "three";
+	import { Color,  GridHelper } from "three";
 	import Camera from "./camera.svelte";
 	import Controls from "./Controls.svelte";
 	import Hdr from "./hdr.svelte";
@@ -53,4 +53,5 @@
 	<!-- <Debug depthTest={false} depthWrite={false} /> -->
 	<slot/>
 </World>
+<Fog near={1} far={200} color={new Color(0,0,0)}/>
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))} on:mousemove={(e)=>pan(e)}></svelte:window>

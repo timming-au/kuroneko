@@ -13,12 +13,12 @@
     RectAreaLightUniformsLib.init()
 
     let panel_0:RectAreaLight, panel_1:RectAreaLight   
-    const {scene} = useThrelte()
-    $:{
-        if(scene && panel_0){
-            scene.add(new RectAreaLightHelper(panel_0))
-        }
-    }
+    // const {scene} = useThrelte()
+    // $:{
+    //     if(scene && panel_0){
+    //         scene.add(new RectAreaLightHelper(panel_0))
+    //     }
+    // }
     // on intensity change
     $: {
         if(panel_0 && panel_1){

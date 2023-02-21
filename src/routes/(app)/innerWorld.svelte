@@ -6,6 +6,7 @@
 	import Nekocom from "./nekocom/Nekocom.svelte";
 	import Planet from "./planet/Planet.svelte";
 	import Sun from "./sun/Sun.svelte";
+	import Moon from "./moon/Moon.svelte";
 
     const {scene, camera} = useThrelte()
 	// light helper
@@ -43,7 +44,7 @@
 		</AutoColliders>
 	</RigidBody>
 </CollisionGroups> -->
-{#if $dev}
+<!-- {#if $dev}
 {#key nekoComObj && $controls}
 {#if nekoComObj}
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
@@ -51,10 +52,11 @@
 {/key}
 {:else}
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
-{/if}
+{/if} -->
 <!-- <Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet> -->
 <Sun position={[30,50,50]}/>
 <Planet rotate position={[0,0,0]} bloomType="weak" scale={4}>
 	<Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}/>
 </Planet>
+<Moon pos={[20,5,-100]} rotateOrigin={[0,0,0]}/>
 

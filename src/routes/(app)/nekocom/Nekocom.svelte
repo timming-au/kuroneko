@@ -66,8 +66,4 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 		  </RigidBody> 
 		</CollisionGroups>
 	</T.Group>
-	
-	<T.Mesh position={[5,10,-20]} let:ref geometry={PolyhedronFactory.getRand()} material={mat_pink}>
-		<InteractiveObject interactive object={ref} on:pointerleave={()=>document.documentElement.style.cursor = 'default'} on:pointerenter={()=>document.documentElement.style.cursor = 'pointer'} on:click={()=>screenSwitch()}/>
-	</T.Mesh>
 </T.Group>

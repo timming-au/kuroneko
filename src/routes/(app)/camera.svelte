@@ -5,7 +5,7 @@
     const {renderer} = useThrelte()
 </script>
 
-<PerspectiveCamera position={{x:500,y:500,z:500}} fov={75}>
+<PerspectiveCamera position={{x:500,y:500,z:500}} fov={90}>
     {#if $dev}
     <OrbitControls
     target={{ y: 1000 }}

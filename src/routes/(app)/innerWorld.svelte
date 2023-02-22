@@ -35,6 +35,7 @@
 	$:{
 		directionalLightPos = (function(){return Object.values($controls.directional.pos) as [x:number,y:number,z:number]})()
 	}
+	let planetScale = 4
 </script>
 <!-- 
 <CollisionGroups groups={[0, 15]}>
@@ -54,8 +55,8 @@
 <T.DirectionalLight color={RGBToString($controls.directional.color)} bind:ref={directionalLight} castShadow intensity={$controls.directional.intensity} position={directionalLightPos} target={nekoComObj}></T.DirectionalLight>
 {/if} -->
 <!-- <Planet pos={[0,-20,0]} bloomType="weak" scale={7}></Planet> -->
-<Sun position={[30,50,50]}/>
-<Planet rotate position={[0,0,0]} bloomType="weak" scale={4}>
+<Sun planetScale={planetScale} pos={[30,50,50]}/>
+<Planet rotate position={[0,0,0]} bloomType="weak" scale={planetScale}>
 	<Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}/>
 </Planet>
 <Moon pos={[20,5,-100]} rotateOrigin={[0,0,0]}/>

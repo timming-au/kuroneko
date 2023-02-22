@@ -1,13 +1,16 @@
 <script lang="ts">
 
-	import { PointLight, T, useFrame, useThrelte } from "@threlte/core";
-	import { Group, IcosahedronGeometry, Mesh, MeshPhongMaterial, PointLightHelper, SphereGeometry, Vector2, Vector3, type PointLight as PointLight3 } from "three";
+	import { PointLight, SpotLight, T, useFrame, useThrelte } from "@threlte/core";
+	import { CameraHelper, DirectionalLight, DirectionalLightHelper, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial, Object3D, PointLightHelper, SphereGeometry,  Vector2, Vector3, type PointLight as PointLight3 } from "three";
 	import { mat_sun } from "./Materials";
     export const type = new Group();
     import type { BloomType } from '$lib/types';
 	import { bloomObject } from "$lib/stores";
 	export let bloomType: BloomType = "sun"
-    let obj: Mesh
+    export let pos: [x:number,y:number,z:number] = [0,0,0]
+    export let planetScale: number = 1
+    let sunMesh: Mesh
+    let sunGroup: Group
     let light: PointLight3
     const {scene} = useThrelte()
     let settings = {
@@ -72,26 +75,32 @@
         return
     }
     $:{
-        if(light){
-            setQuality("light", "high", light)
-            scene.add(new PointLightHelper(light,2,0x00ff00))
+        if(scene && sunMesh){
+            let dirLight = new DirectionalLight(0xff7e33,5)
+            setQuality("light", "med", dirLight)
+            sunGroup.add( dirLight );
+            dirLight.castShadow = true
+            dirLight.shadow.camera.top = 3.75 * planetScale;
+            dirLight.shadow.camera.bottom = -3.75 * planetScale;
+            dirLight.shadow.camera.left = -3.75 * planetScale;
+            dirLight.shadow.camera.right = 3.75 * planetScale;
+            scene.add( new CameraHelper( dirLight.shadow.camera ) );
         }
     }
 	$:{
-		if(bloomType && obj){
-			$bloomObject = [obj, bloomType]
+		if(bloomType && sunMesh){
+			$bloomObject = [sunMesh, bloomType]
 		}
 	}
     useFrame((_,delta)=>{
-        if(obj){
-            obj.rotateOnAxis(new Vector3(0,0,1),1*delta)
+        if(sunMesh){
+            sunMesh.rotateOnAxis(new Vector3(0,0,1),1*delta)
         }
     })
     let radius = 5
 </script>
-<T.Mesh bind:ref={obj} {...$$restProps}>
-    <T.Mesh geometry={new IcosahedronGeometry(radius,2)} material={mat_sun}></T.Mesh>
-</T.Mesh>
-{#if obj}
-<PointLight shadow color={0xff7e33} position={obj.position} power={500} intensity={50000} bind:light={light}></PointLight>
-{/if}
+<T.Group bind:ref={sunGroup} position={pos}>
+    <T.Mesh bind:ref={sunMesh}>
+        <T.Mesh geometry={new IcosahedronGeometry(radius,2)} material={mat_sun}></T.Mesh>
+    </T.Mesh>
+</T.Group>

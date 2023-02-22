@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { RGBToHex } from "$lib/helper";
 	import { cam, controls } from "$lib/stores";
-	import { AmbientLight, HemisphereLight, useThrelte, Fog } from "@threlte/core";
+	import { AmbientLight, HemisphereLight, useThrelte, Fog, T } from "@threlte/core";
 	import { World } from '@threlte/rapier';
 	import gsap from "gsap";
+	import { onMount } from "svelte";
 	import { Color,  GridHelper } from "three";
 	import Camera from "./camera.svelte";
 	import Controls from "./Controls.svelte";
@@ -12,7 +13,7 @@
 
 	export let loaded: boolean
 	// move camera on mousemove
-	const { pointer, camera,scene} = useThrelte()
+	const { pointer, camera, scene, renderer} = useThrelte()
 	function pan(e: MouseEvent){
 		return
 		if($cam.pan){
@@ -53,5 +54,5 @@
 	<!-- <Debug depthTest={false} depthWrite={false} /> -->
 	<slot/>
 </World>
-<Fog near={1} far={200} color={new Color(0,0,0)}/>
+<!-- <Fog near={1} far={200} color={new Color(0,0,0)}/> -->
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))} on:mousemove={(e)=>pan(e)}></svelte:window>

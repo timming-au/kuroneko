@@ -100,4 +100,9 @@
 			renderer.setClearColor(0x000000,1)
 		}
 	}
+	$:{
+		if(renderer && scene && $camera){
+			renderer.compile(scene, $camera)
+		}
+	}
 </script>

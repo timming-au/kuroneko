@@ -7,10 +7,10 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
   import type { BloomType } from "$lib/types";
   import { T, useFrame } from '@threlte/core';
   import { useGltf } from '@threlte/extras';
-  import { BackSide, DoubleSide, FrontSide, Vector3, type Mesh } from 'three';
+  import { BackSide, Box3, DoubleSide, FrontSide, Vector3, type Mesh } from 'three';
   import Trees from '../trees/Trees.svelte';
 
-	const gltfUrl = new URL('$src/assets/models/planet/planett.gltf', import.meta.url).href
+	const gltfUrl = new URL('$src/assets/models/planet/planet.glb', import.meta.url).href
   const { gltf } = useGltf(gltfUrl, { useDraco: true })
   export let bloomType: BloomType = undefined
   export let rotate: boolean = false
@@ -30,6 +30,8 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
   $:{
     if(bloomType && obj){
       $bloomObject = [obj, bloomType]
+      obj.geometry.computeBoundingBox();
+      console.log(obj)
     }
   }
   $:{

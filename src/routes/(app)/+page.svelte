@@ -7,6 +7,7 @@
     import "../../app.css"
 	import { DefaultLoadingManager, PCFSoftShadowMap } from "three";
     import gsap from "gsap";
+	import { onMount, onDestroy } from "svelte";
     
     let load = {
         done: false,
@@ -26,6 +27,19 @@
         })
         // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
     };
+    let canvas: HTMLDivElement
+    onMount(()=>{
+        canvas.addEventListener("click",function(){
+            canvas.requestPointerLock();
+        })
+    })
+    onDestroy(()=>{
+        if(canvas){
+            canvas.removeEventListener("click",function(){
+                canvas.requestPointerLock();
+            })
+        }
+    })
 </script>
 <div id="loading" class="w-screen h-screen absolute bg-black flex items-center justify-center">
     <p>Loading... {load.percent}%</p>

@@ -1,5 +1,6 @@
 import {
   Camera,
+	Euler,
 	EventDispatcher,
 	Quaternion,
 	Vector3
@@ -14,7 +15,7 @@ class FlyControls extends EventDispatcher {
   rollSpeed: number
   dragToLook: boolean
   autoForward: boolean
-  tmpQuaternion: Quaternion
+  tmpRotation: Euler
   status: number
   moveVector: Vector3
   rotationVector: Vector3
@@ -61,7 +62,7 @@ class FlyControls extends EventDispatcher {
 		const lastQuaternion = new Quaternion();
 		const lastPosition = new Vector3();
 
-		this.tmpQuaternion = new Quaternion();
+		this.tmpRotation = new Euler();
 
 		this.status = 0;
 
@@ -79,26 +80,14 @@ class FlyControls extends EventDispatcher {
 
 			switch ( event.code ) {
 
-				case 'ShiftLeft':
-				case 'ShiftRight': this.movementSpeedMultiplier = .1; break;
+				case 'KeyW' || 'ArrowUp': this.moveState.forward = 1; break;
+				case 'KeyS' || 'ArrowDown': this.moveState.back = 1; break;
 
-				case 'KeyW': this.moveState.forward = 1; break;
-				case 'KeyS': this.moveState.back = 1; break;
+				case 'KeyA' || 'ArrowLeft': this.moveState.left = 1; break;
+				case 'KeyD' || 'ArrowRight': this.moveState.right = 1; break;
 
-				case 'KeyA': this.moveState.left = 1; break;
-				case 'KeyD': this.moveState.right = 1; break;
-
-				case 'KeyR': this.moveState.up = 1; break;
-				case 'KeyF': this.moveState.down = 1; break;
-
-				case 'ArrowUp': this.moveState.pitchUp = 1; break;
-				case 'ArrowDown': this.moveState.pitchDown = 1; break;
-
-				case 'ArrowLeft': this.moveState.yawLeft = 1; break;
-				case 'ArrowRight': this.moveState.yawRight = 1; break;
-
-				case 'KeyQ': this.moveState.rollLeft = 1; break;
-				case 'KeyE': this.moveState.rollRight = 1; break;
+				case 'Space' : this.moveState.up = 1; break;
+				case 'ShiftLeft' || 'ControlLeft': this.moveState.down = 1; break;
 
 			}
 
@@ -111,26 +100,14 @@ class FlyControls extends EventDispatcher {
 
 			switch ( event.code ) {
 
-				case 'ShiftLeft':
-				case 'ShiftRight': this.movementSpeedMultiplier = 1; break;
+				case 'KeyW' || 'ArrowUp': this.moveState.forward = 0; break;
+				case 'KeyS' || 'ArrowDown': this.moveState.back = 0; break;
 
-				case 'KeyW': this.moveState.forward = 0; break;
-				case 'KeyS': this.moveState.back = 0; break;
+				case 'KeyA' || 'ArrowLeft': this.moveState.left = 0; break;
+				case 'KeyD' || 'ArrowRight': this.moveState.right = 0; break;
 
-				case 'KeyA': this.moveState.left = 0; break;
-				case 'KeyD': this.moveState.right = 0; break;
-
-				case 'KeyR': this.moveState.up = 0; break;
-				case 'KeyF': this.moveState.down = 0; break;
-
-				case 'ArrowUp': this.moveState.pitchUp = 0; break;
-				case 'ArrowDown': this.moveState.pitchDown = 0; break;
-
-				case 'ArrowLeft': this.moveState.yawLeft = 0; break;
-				case 'ArrowRight': this.moveState.yawRight = 0; break;
-
-				case 'KeyQ': this.moveState.rollLeft = 0; break;
-				case 'KeyE': this.moveState.rollRight = 0; break;
+				case 'Space' : this.moveState.up = 0; break;
+				case 'ShiftLeft' || 'ControlLeft': this.moveState.down = 0; break;
 
 			}
 
@@ -164,12 +141,16 @@ class FlyControls extends EventDispatcher {
 
 			if ( ! this.dragToLook || this.status > 0 ) {
 
-				const container = this.getContainerDimensions();
-				const halfWidth = container.size[ 0 ] / 2;
-				const halfHeight = container.size[ 1 ] / 2;
+        const movementX = event.movementX || 0;
+        const movementY = event.movementY || 0;
 
-				this.moveState.yawLeft = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth ) / halfWidth;
-				this.moveState.pitchDown = ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
+        this.tmpRotation.y -= movementX * 0.01;
+        this.tmpRotation.x -= movementY * 0.01;
+
+        // this.moveState.yawLeft -= event.movementX * 0.00001
+        // this.moveState.pitchDown -= event.movementY * 0.00001
+				// this.moveState.yawLeft = - ( ( event.pageX - container.offset[ 0 ] ) - halfWidth ) / halfWidth;
+				// this.moveState.pitchDown = ( ( event.pageY - container.offset[ 1 ] ) - halfHeight ) / halfHeight;
 
 				this.updateRotationVector();
 
@@ -205,25 +186,17 @@ class FlyControls extends EventDispatcher {
 		this.update = function ( delta: number ) {
 
 			const moveMult = delta * this.movementSpeed;
-			const rotMult = delta * this.rollSpeed;
 
 			this.object.translateX( this.moveVector.x * moveMult );
 			this.object.translateY( this.moveVector.y * moveMult );
 			this.object.translateZ( this.moveVector.z * moveMult );
 
-			this.tmpQuaternion.set( this.rotationVector.x * rotMult, this.rotationVector.y * rotMult, this.rotationVector.z * rotMult, 1 ).normalize();
-			this.object.quaternion.multiply( this.tmpQuaternion );
+			this.object.rotation.copy(this.tmpRotation)
 
-			if (
-				lastPosition.distanceToSquared( this.object.position ) > EPS ||
-				8 * ( 1 - lastQuaternion.dot( this.object.quaternion ) ) > EPS
-			) {
-
-				this.dispatchEvent( _changeEvent );
-				lastQuaternion.copy( this.object.quaternion );
-				lastPosition.copy( this.object.position );
-
-			}
+      // clear rotationVector
+      this.rotationVector.x = 0
+			this.rotationVector.y = 0
+			this.rotationVector.z = 0
 
 		};
 
@@ -241,10 +214,11 @@ class FlyControls extends EventDispatcher {
 
 		this.updateRotationVector = function () {
 
-			this.rotationVector.x = ( - this.moveState.pitchDown + this.moveState.pitchUp );
-			this.rotationVector.y = ( - this.moveState.yawRight + this.moveState.yawLeft );
-			this.rotationVector.z = ( - this.moveState.rollRight + this.moveState.rollLeft );
+			this.rotationVector.x += ( - this.moveState.pitchDown + this.moveState.pitchUp );
+			this.rotationVector.y += ( - this.moveState.yawRight + this.moveState.yawLeft );
+			this.rotationVector.z += ( - this.moveState.rollRight + this.moveState.rollLeft );
 
+      
 			//console.log( 'rotate:', [ this.rotationVector.x, this.rotationVector.y, this.rotationVector.z ] );
 
 		};
@@ -309,3 +283,4 @@ function contextmenu( event: Event ) {
 }
 
 export { FlyControls };
+

@@ -4,16 +4,13 @@
 	import { useFixedJoint } from "@threlte/rapier";
 	import type { PerspectiveCamera as PerspectiveCamera3 } from "three";
 	import { DEG2RAD } from "three/src/math/MathUtils";
+	import { FirstPersonCamera } from "./Controller";
 	import { FlyControls } from "./Fly";
     const {camera, renderer} = useThrelte()
-    let controls: FlyControls
+    let controls: FirstPersonCamera
     $:{
         if($camera && renderer){
-            controls = new FlyControls( $camera, renderer.domElement );
-            controls.domElement = renderer.domElement;
-            controls.rollSpeed = Math.PI / 24;
-            controls.autoForward = false;
-            controls.dragToLook = false;
+            controls = new FirstPersonCamera( $camera );
         }
     }
     useFrame((_,delta)=>{

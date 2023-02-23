@@ -1,7 +1,7 @@
 <script lang="ts">
     import {Canvas} from "@threlte/core";
 	import Scene from "./Scene.svelte";
-	import InnerWorld from "./innerWorld.svelte";
+	import World from "./World.svelte";
 	import Interface from "./Interface.svelte";
 	import { dev } from "$lib/stores";
     import "../../app.css"
@@ -43,8 +43,6 @@
         {#if $dev && window}
         <Interface/>
         {/if}
-        <Scene loaded={load.done}>
-            <InnerWorld></InnerWorld>
-        </Scene>
+        <Scene loaded={load.done}/>
     </Canvas>
 </div>

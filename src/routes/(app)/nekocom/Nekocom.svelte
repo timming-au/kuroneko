@@ -32,38 +32,26 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 				$controls.com.intensity = $controls.com.intensity
 			},
 		}) 
-		gsap.to($controls.directional,{
-			intensity: $controls.directional.intensity == 0 ? 20 : 0,
-			duration:$controls.directional.intensity == 0 ? 0.2 : 0.8,
-			ease:$controls.directional.intensity == 0 ? "power1.out" : "power4.out",
-			onUpdate:function(){
-				$controls.directional.intensity = $controls.directional.intensity
-			}
-		}) 
 	}
 </script>
-<T.Group position={comPos} {...$$restProps}>
-	<T.Group rotation={[0,Math.PI,0]}>
-		<CollisionGroups groups={[0, 15]}>
-			<Model bind:obj={obj} rigidBodyType={"fixed"}>
-				<Panel scale={$$props.scale} bind:panel={panel}>
-					<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
-				</Panel>
-			</Model>
-		</CollisionGroups>
-		
-		<CollisionGroups groups={[0]}>
-			<RigidBody>
-				<AutoColliders>
-					<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
-				</AutoColliders>
-			</RigidBody>
-			<RigidBody>
-				<AutoColliders>
-			  <T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
-			  </T.Mesh>
-			</AutoColliders>
-		  </RigidBody> 
-		</CollisionGroups>
-	</T.Group>
-</T.Group>
+<CollisionGroups groups={[0, 15]}>
+	<Model rotation={[0,Math.PI,0]} position={comPos} {...$$restProps} bind:obj={obj} rigidBodyType={"fixed"}>
+		<Panel scale={$$props.scale} bind:panel={panel}>
+			<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
+		</Panel>
+	</Model>
+</CollisionGroups>
+
+<CollisionGroups groups={[0]}>
+	<RigidBody>
+		<AutoColliders>
+			<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
+		</AutoColliders>
+	</RigidBody>
+	<RigidBody>
+		<AutoColliders>
+		<T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
+		</T.Mesh>
+	</AutoColliders>
+	</RigidBody> 
+</CollisionGroups>

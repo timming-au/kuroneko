@@ -17,9 +17,9 @@
         low: {
             light:{
                 shadow:{
-                    mapSize: new Vector2(256,256),
-                    radius: 0.1,
-                    normalBias: 0.9,
+                    mapSize: new Vector2(1024,1024),
+                    radius: 2,
+                    normalBias: 0.1,
                     camera:{
                         far:1000,
                         near:10,
@@ -77,14 +77,14 @@
     $:{
         if(scene && sunMesh){
             let dirLight = new DirectionalLight(0xff7e33,5)
-            setQuality("light", "med", dirLight)
+            setQuality("light", "low", dirLight)
             sunGroup.add( dirLight );
             dirLight.castShadow = true
             dirLight.shadow.camera.top = 3.75 * planetScale;
             dirLight.shadow.camera.bottom = -3.75 * planetScale;
             dirLight.shadow.camera.left = -3.75 * planetScale;
             dirLight.shadow.camera.right = 3.75 * planetScale;
-            scene.add( new CameraHelper( dirLight.shadow.camera ) );
+            // scene.add( new CameraHelper( dirLight.shadow.camera ) );
         }
     }
 	$:{

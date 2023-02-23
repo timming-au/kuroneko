@@ -24,19 +24,6 @@ const def = writable({
         distance:20,
         power:50,
     },
-    directional:{
-        intensity:1,
-        color:{
-            r:40,
-            g:40,
-            b:40,
-        },
-        pos:{
-            x:0,
-            y:0,
-            z:0,
-        }
-    },
     ambient:{
         color:{
             r:40,
@@ -58,21 +45,15 @@ const def = writable({
         },
         intensity: 0.3,
     },
+    view:{
+        player: false
+    }
 })
 export const controls:Writable<{
     com: {
         intensity: number;
         distance: number;
         power: number;
-    };
-    directional: {
-        intensity: number;
-        color:RGB
-        pos:{
-            x:number,
-            y:number,
-            z:number,
-        }
     };
     ambient: {
         color: RGB
@@ -83,4 +64,7 @@ export const controls:Writable<{
         groundColor: RGB
         intensity: number;
     };
+    view:{
+        player: boolean
+    }
 }> = def

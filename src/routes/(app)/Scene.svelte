@@ -2,14 +2,15 @@
 	import { RGBToHex } from "$lib/helper";
 	import { cam, controls } from "$lib/stores";
 	import { AmbientLight, HemisphereLight, useThrelte, Fog, T } from "@threlte/core";
-	import { World } from '@threlte/rapier';
+	import { Debug, World as RapierWorld } from '@threlte/rapier';
 	import gsap from "gsap";
 	import { onMount } from "svelte";
 	import { Color,  GridHelper } from "three";
-	import Camera from "./camera.svelte";
+	import Camera from "./Camera.svelte";
 	import Controls from "./Controls.svelte";
-	import Hdr from "./hdr.svelte";
+	import Hdr from "./Hdr.svelte";
 	import Renderer from "./Renderer.svelte";
+	import World from "./World.svelte";
 
 	export let loaded: boolean
 	// move camera on mousemove
@@ -50,9 +51,9 @@
 
 <AmbientLight intensity={$controls.ambient.intensity} color={RGBToHex($controls.ambient.color)}></AmbientLight>
 <HemisphereLight intensity={$controls.hemisphere.intensity} groundColor={RGBToHex($controls.hemisphere.groundColor)} skyColor={RGBToHex($controls.hemisphere.skyColor)}></HemisphereLight>
-<World gravity={{y:-19.62}}>
-	<!-- <Debug depthTest={false} depthWrite={false} /> -->
-	<slot/>
-</World>
+<RapierWorld gravity={{y:-19.62}}>
+	<World/>
+	<Debug depthTest={false} depthWrite={false} />
+</RapierWorld>
 <!-- <Fog near={1} far={200} color={new Color(0,0,0)}/> -->
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))} on:mousemove={(e)=>pan(e)}></svelte:window>

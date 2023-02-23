@@ -84,6 +84,8 @@
     
     
     function scatterTrees(count: number, treeObj: Tree, maxScale: number, weightName: string, meshSurface: Mesh){
+        if(meshSurface.geometry.index) meshSurface.geometry = meshSurface.geometry.toNonIndexed()
+        
         for(let name in treeObj){
             let tree = treeObj[name]
             // instantiate trees

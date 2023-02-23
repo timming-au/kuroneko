@@ -5,7 +5,7 @@
   export let model: Mesh
   export let shadow: boolean = false
   $:{
-    if(model){
+    if(model && shadow){
       model.traverse((obj)=>{
         obj.castShadow = true
         obj.receiveShadow = true

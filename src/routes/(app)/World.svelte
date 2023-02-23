@@ -40,5 +40,5 @@
 </Planet>
 <Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}/>
 <Moon pos={[20,5,-100]} rotateOrigin={[0,0,0]}/>
-<Player shadow position={new Vector3(0,20,0)}/>
+<Player shadow={true} position={new Vector3(0,20,0)}/>
 

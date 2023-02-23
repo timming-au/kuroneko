@@ -20,6 +20,6 @@
 <RigidBody {...$$restProps} rigidBody={rigidBody}>
   <Debug></Debug>
   <AutoColliders colliders={collider}>
-    <Model shadow bind:model={model}></Model>
+    <Model shadow={shadow} bind:model={model}></Model>
   </AutoColliders>
 </RigidBody>

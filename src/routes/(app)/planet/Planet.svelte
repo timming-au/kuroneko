@@ -11,8 +11,6 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
 	
   export let bloomType: BloomType = undefined
   export let rotate: boolean = false
-  export let position: Vector3;
-  export let scale: Scale;
   let model: Group
   
 	// useFrame((_,delta)=>{

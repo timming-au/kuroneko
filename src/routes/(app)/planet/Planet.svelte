@@ -5,17 +5,17 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
 <script lang="ts">
   import { bloomObject } from '$lib/stores';
   import type { BloomType } from "$lib/types";
-  import type { Scale } from '@threlte/core';
+  import { useFrame, type Scale } from '@threlte/core';
   import { Vector3, type Group } from 'three';
   import Model from './Model.svelte';
 	
   export let bloomType: BloomType = undefined
   export let rotate: boolean = false
-  let model: Group
+  export let model: Group
   
-	// useFrame((_,delta)=>{
-  //   update(delta)
-	// })
+	useFrame((_,delta)=>{
+    update(delta)
+	})
 
 	function update(delta: number){
     let scale = 1000*delta
@@ -31,4 +31,5 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\blends\planet\planet.gltf
   }
 </script>
 <Model {...$$restProps} bind:model={model}>
+  <slot/>
 </Model>

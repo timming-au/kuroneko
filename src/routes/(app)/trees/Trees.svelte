@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { BackSide, BufferGeometry, DoubleSide, FrontSide, InstancedMesh, Material, Mesh, MeshDistanceMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
+	import { BackSide, BufferGeometry, DoubleSide, FrontSide, Group, InstancedMesh, Material, Mesh, MeshDistanceMaterial, MeshStandardMaterial, Object3D, Vector3 } from 'three';
 	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 	import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler';
 	import { treesMaterial } from './Materials';
     import { envIntensity } from '$lib/stores';
 
-    export let planetObject: Mesh;
+    export let planetObject: Group;
 
     type Tree = {
         [name:string]:{

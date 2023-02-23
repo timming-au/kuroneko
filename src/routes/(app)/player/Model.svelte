@@ -1,7 +1,7 @@
 <script lang="ts">
 
 	import { T } from "@threlte/core";
-	import { BoxGeometry, Mesh, MeshBasicMaterial } from "three";
+	import { BoxGeometry, Mesh, MeshBasicMaterial, SphereGeometry } from "three";
   export let model: Mesh
   export let shadow: boolean = false
   $:{
@@ -13,5 +13,5 @@
     }
   }
 </script>
-<T.Mesh bind:ref={model} geometry={new BoxGeometry(1.5,4,0.5)} material={new MeshBasicMaterial()}>
+<T.Mesh bind:ref={model} geometry={new SphereGeometry(0.3,8,8)} material={new MeshBasicMaterial()}>
 </T.Mesh>

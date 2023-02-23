@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { RigidBody, AutoColliders } from "@threlte/rapier";
-  import { T, Three } from "@threlte/core";
+  import { RigidBody, AutoColliders, useRapier, useRigidBody } from "@threlte/rapier";
+  import { T, Three, useFrame } from "@threlte/core";
 	import { useGltf } from "@threlte/extras";
 	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
-	import type { Group, Mesh } from "three";
+	import { Euler, Quaternion, type Group, type Mesh } from "three";
+	import type { RigidBody as RRigidBody } from "@dimforge/rapier3d-compat";
 
 	const gltfUrl = new URL('$src/assets/models/nekocom/nekocom.gltf', import.meta.url).href
 	const { gltf } = useGltf(gltfUrl)
@@ -20,9 +21,15 @@
       })
     }
   }
+  let rigidBody: RRigidBody
+  useFrame(()=>{
+    if(rigidBody){
+      rigidBody.setRotation(obj.getWorldQuaternion(new Quaternion()),true)
+    }
+  })
 </script>
 {#if $gltf}
-<RigidBody type={rigidBodyType}>
+<RigidBody bind:rigidBody={rigidBody} type={rigidBodyType}>
   <AutoColliders shape={'trimesh'}>
     <T.Group bind:ref={obj} {...$$restProps}>
       <T.Mesh geometry={$gltf.nodes.monitor.geometry} material={$gltf.materials.monitor} />

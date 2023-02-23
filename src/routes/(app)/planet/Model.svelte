@@ -19,7 +19,7 @@
   }
 </script>
 {#if $gltf}
-  <T.Group receiveShadow castShadow rotation={[0,0,0]} bind:ref={model} name="planet">
+  <T.Group {...$$restProps} receiveShadow castShadow rotation={[0,0,0]} bind:ref={model} name="planet">
     <T.Mesh receiveShadow castShadow name="Icosphere013" geometry={$gltf.nodes.Icosphere013.geometry} material={$gltf.materials.water} />
     <T.Mesh receiveShadow
   castShadow        name="Icosphere013_1"

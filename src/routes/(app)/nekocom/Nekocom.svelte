@@ -34,24 +34,8 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 		}) 
 	}
 </script>
-<CollisionGroups groups={[0, 15]}>
-	<Model rotation={[0,Math.PI,0]} position={comPos} {...$$restProps} bind:obj={obj} rigidBodyType={"fixed"}>
-		<Panel scale={$$props.scale} bind:panel={panel}>
-			<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
-		</Panel>
-	</Model>
-</CollisionGroups>
-
-<CollisionGroups groups={[0]}>
-	<RigidBody>
-		<AutoColliders>
-			<T.Mesh scale={0.2} receiveShadow castShadow geometry={PolyhedronFactory.getRand()} material={mat_pink} position={comPos}></T.Mesh>
-		</AutoColliders>
-	</RigidBody>
-	<RigidBody>
-		<AutoColliders>
-		<T.Mesh position={[0,-0.6,0]} geometry={new BoxGeometry(0.3,0.3,0.3)} material={mat_bulb}>
-		</T.Mesh>
-	</AutoColliders>
-	</RigidBody> 
-</CollisionGroups>
+<Model position={comPos} {...$$restProps} bind:obj={obj} rigidBodyType={"fixed"}>
+	<Panel scale={$$props.scale} bind:panel={panel}>
+		<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
+	</Panel>
+</Model>

@@ -51,9 +51,8 @@
 
 <AmbientLight intensity={$controls.ambient.intensity} color={RGBToHex($controls.ambient.color)}></AmbientLight>
 <HemisphereLight intensity={$controls.hemisphere.intensity} groundColor={RGBToHex($controls.hemisphere.groundColor)} skyColor={RGBToHex($controls.hemisphere.skyColor)}></HemisphereLight>
-<RapierWorld gravity={{y:-19.62}}>
+<RapierWorld gravity={{y:-9.81}}>
 	<World/>
-	<Debug depthTest={false} depthWrite={false} />
 </RapierWorld>
 <!-- <Fog near={1} far={200} color={new Color(0,0,0)}/> -->
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))} on:mousemove={(e)=>pan(e)}></svelte:window>

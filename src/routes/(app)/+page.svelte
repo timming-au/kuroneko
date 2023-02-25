@@ -29,14 +29,14 @@
     };
     let canvas: HTMLDivElement
     onMount(()=>{
-        canvas.addEventListener("click",function(){
-            canvas.requestPointerLock();
+        canvas.addEventListener("click", async function(){
+            await canvas.requestPointerLock();
         })
     })
     onDestroy(()=>{
         if(canvas){
-            canvas.removeEventListener("click",function(){
-                canvas.requestPointerLock();
+            canvas.removeEventListener("click",async function(){
+                await canvas.requestPointerLock();
             })
         }
     })
@@ -47,7 +47,7 @@
         <div class="w-[{load.percent}%] h-full bg-white rounded"></div>
     </div>
 </div>
-<div id="canvas" class="w-screen h-screen absolute invisible">
+<div id="canvas" bind:this={canvas} class="w-screen h-screen absolute invisible">
     <Canvas shadowMapType={PCFSoftShadowMap} frameloop="never" rendererParameters={{
         powerPreference: "high-performance",
         antialias: false,

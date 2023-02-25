@@ -2,20 +2,33 @@
 	import { dev } from "$lib/stores";
 	import { OrbitControls, useThrelte, PerspectiveCamera, useFrame } from "@threlte/core";
 	import { useFixedJoint } from "@threlte/rapier";
+	import { onDestroy } from "svelte";
+	import { onMount } from "svelte";
 	import type { PerspectiveCamera as PerspectiveCamera3 } from "three";
 	import { DEG2RAD } from "three/src/math/MathUtils";
 	import { FirstPersonCamera } from "./Controller";
 	import { FlyControls } from "./Fly";
     const {camera, renderer} = useThrelte()
     let controls: FirstPersonCamera
-    $:{
-        if($camera && renderer){
-            controls = new FirstPersonCamera( $camera );
+    let a = 0
+    onMount(()=>{
+        if($camera && renderer && a <= 0){
+            if(controls){
+                controls.destroy_()
+            }
+            controls = new FirstPersonCamera( ($camera as unknown as PerspectiveCamera), document.documentElement );
+            console.log("a")
+            a++
         }
-    }
+    })
     useFrame((_,delta)=>{
         if(controls){
             controls.update( delta );
+        }
+    })
+    onDestroy(()=>{
+        if(controls){
+            controls.destroy_()
         }
     })
 </script>

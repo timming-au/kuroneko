@@ -1,19 +1,30 @@
 
-import { Camera, Quaternion, Vector3 } from "three";
+import type { PerspectiveCamera } from "@threlte/core";
+import { Quaternion, Vector3 } from "three";
 
 const KEYS = {
   'a': 65,
   's': 83,
   'w': 87,
   'd': 68,
+  'space': 32,
+  'shift': 16,
 };
 
 function clamp(x, a, b) {
   return Math.min(Math.max(x, a), b);
 }
 
-class InputController {
-  target_: HTMLElement | undefined
+export class FirstPersonCamera {
+  camera_: PerspectiveCamera
+  rotation_: Quaternion;
+  translation_: Vector3;
+  sensitivity: number;
+  phi_: number;
+  phiSpeed_: number;
+  theta_: number;
+  thetaSpeed_: number;
+  target_!: HTMLElement
   current_!: {
     leftButton: boolean;
     rightButton: boolean;
@@ -22,25 +33,26 @@ class InputController {
     mouseX: number;
     mouseY: number;
   };
-  previous_!: {
-    leftButton: boolean;
-    rightButton: boolean;
-    mouseXDelta: number;
-    mouseYDelta: number;
-    mouseX: number;
-    mouseY: number;
-  } | null;
   keys_!: {
     [key:string]: boolean;
   };
   previousKeys_!: {
     [key:string]: boolean;
   };
-  constructor(target?: HTMLElement) {
-    this.initialize_(target);    
+
+  constructor(camera: PerspectiveCamera,target:HTMLElement,sensitivity = 0.0006) {
+    this.camera_ = camera;
+    this.sensitivity = sensitivity
+    this.initializeInput_(target)
+    this.rotation_ = new Quaternion();
+    this.translation_ = new Vector3(0, 2, 0);
+    this.phi_ = 0;
+    this.phiSpeed_ = 8;
+    this.theta_ = 0;
+    this.thetaSpeed_ = 5;
   }
 
-  initialize_(target?: HTMLElement) {
+  initializeInput_(target) {
     this.current_ = {
       leftButton: false,
       rightButton: false,
@@ -49,33 +61,39 @@ class InputController {
       mouseX: 0,
       mouseY: 0,
     };
-    this.previous_ = null;
     this.keys_ = {};
     Object.keys(KEYS).forEach((key) => this.keys_[key] = false);
     this.previousKeys_ = {};
     Object.keys(KEYS).forEach((key) => this.previousKeys_[key] = false);
-    this.target_ = target || document as unknown as HTMLElement;
-    this.target_.addEventListener('mousedown', (e) => this.onMouseDown_(e), false);
-    this.target_.addEventListener('mousemove', (e) => this.onMouseMove_(e), false);
-    this.target_.addEventListener('mouseup', (e) => this.onMouseUp_(e), false);
+    this.target_ = target
+    this.target_.addEventListener('pointerdown', (e) => this.onMouseDown_(e), false);
+    this.target_.addEventListener('pointermove', (e) => this.onMouseMove_(e), false);
+    this.target_.addEventListener('pointerup', (e) => this.onMouseUp_(e), false);
     this.target_.addEventListener('keydown', (e) => this.onKeyDown_(e), false);
     this.target_.addEventListener('keyup', (e) => this.onKeyUp_(e), false);
   }
 
-  onMouseMove_(e) {
-    this.current_.mouseX = e.pageX - window.innerWidth / 2;
-    this.current_.mouseY = e.pageY - window.innerHeight / 2;
-
-    if (this.previous_ === null) {
-      this.previous_ = {...this.current_};
+  destroy_(){
+    if(this.target_){
+      this.target_.removeEventListener('pointerdown', (e) => this.onMouseDown_(e), false);
+      this.target_.removeEventListener('pointermove', (e) => this.onMouseMove_(e), false);
+      this.target_.removeEventListener('pointerup', (e) => this.onMouseUp_(e), false);
+      this.target_.removeEventListener('keydown', (e) => this.onKeyDown_(e), false);
+      this.target_.removeEventListener('keyup', (e) => this.onKeyUp_(e), false);
     }
+  }
 
-    this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
-    this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY;
+  onMouseMove_(e) {
+    this.current_.mouseXDelta = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+    this.current_.mouseYDelta = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+    console.log(this.current_.mouseXDelta,this.current_.mouseYDelta)
+    this.updateRotation_()
+    this.updateCamera_()
+    this.current_.mouseXDelta = 0;
+    this.current_.mouseYDelta = 0;
   }
 
   onMouseDown_(e) {
-    this.onMouseMove_(e);
 
     switch (e.button) {
       case 0: {
@@ -90,7 +108,6 @@ class InputController {
   }
 
   onMouseUp_(e) {
-    this.onMouseMove_(e);
 
     switch (e.button) {
       case 0: {
@@ -116,49 +133,12 @@ class InputController {
     return !!this.keys_[keyCode];
   }
 
-  isReady() {
-    return this.previous_ !== null;
-  }
-
-  update(_) {
-    if (this.previous_ !== null) {
-      this.current_.mouseXDelta = this.current_.mouseX - this.previous_.mouseX;
-      this.current_.mouseYDelta = this.current_.mouseY - this.previous_.mouseY;
-
-      this.previous_ = {...this.current_};
-    }
-  }
-};
-
-
-export class FirstPersonCamera {
-  camera_: Camera
-  input_: InputController
-  rotation_: Quaternion;
-  translation_: Vector3;
-  phi_: number;
-  phiSpeed_: number;
-  theta_: number;
-  thetaSpeed_: number;
-  constructor(camera) {
-    this.camera_ = camera;
-    this.input_ = new InputController();
-    this.rotation_ = new Quaternion();
-    this.translation_ = new Vector3(0, 2, 0);
-    this.phi_ = 0;
-    this.phiSpeed_ = 8;
-    this.theta_ = 0;
-    this.thetaSpeed_ = 5;
-  }
-
   update(timeElapsedS) {
-    this.updateRotation_(timeElapsedS);
-    this.updateCamera_(timeElapsedS);
     this.updateTranslation_(timeElapsedS);
-    this.input_.update(timeElapsedS);
+    this.updateCamera_();
   }
 
-  updateCamera_(_) {
+  updateCamera_() {
     this.camera_.quaternion.copy(this.rotation_);
     this.camera_.position.copy(this.translation_);
 
@@ -170,28 +150,30 @@ export class FirstPersonCamera {
   }
   
   updateTranslation_(timeElapsedS) {
-    const forwardVelocity = (this.input_.key(KEYS.w) ? 1 : 0) + (this.input_.key(KEYS.s) ? -1 : 0)
-    const strafeVelocity = (this.input_.key(KEYS.a) ? 1 : 0) + (this.input_.key(KEYS.d) ? -1 : 0)
-
+    const forwardVelocity = (this.key(KEYS.w) ? 1 : 0) + (this.key(KEYS.s) ? -1 : 0)
+    const strafeVelocity = (this.key(KEYS.a) ? 1 : 0) + (this.key(KEYS.d) ? -1 : 0)
+    const jumpVelocity = (this.key(KEYS.space) ? 1 : 0) + (this.key(KEYS.shift) ? -1 : 0)
     const qx = new Quaternion();
     qx.setFromAxisAngle(new Vector3(0, 1, 0), this.phi_);
-
+    const up = new Vector3(0,1,0)
+    up.multiplyScalar(jumpVelocity * timeElapsedS)
     const forward = new Vector3(0, 0, -1);
     forward.applyQuaternion(qx);
-    forward.multiplyScalar(forwardVelocity * timeElapsedS * 10);
+    forward.multiplyScalar(forwardVelocity * timeElapsedS);
 
     const left = new Vector3(-1, 0, 0);
     left.applyQuaternion(qx);
-    left.multiplyScalar(strafeVelocity * timeElapsedS * 10);
-
+    left.multiplyScalar(strafeVelocity * timeElapsedS);
+    forward.add(left).normalize().multiplyScalar(0.05)
+    
+    forward.add(up.multiplyScalar(0.05*50))
     this.translation_.add(forward);
-    this.translation_.add(left);
   }
 
-  updateRotation_(timeElapsedS) {
-    const xh = this.input_.current_.mouseXDelta / window.innerWidth;
-    const yh = this.input_.current_.mouseYDelta / window.innerHeight;
-
+  updateRotation_() {
+    const xh = this.current_.mouseXDelta * this.sensitivity;
+    const yh = this.current_.mouseYDelta * this.sensitivity;
+ 
     this.phi_ += -xh * this.phiSpeed_;
     this.theta_ = clamp(this.theta_ + -yh * this.thetaSpeed_, -Math.PI / 3, Math.PI / 3);
 

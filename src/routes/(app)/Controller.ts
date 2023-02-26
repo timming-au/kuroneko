@@ -25,6 +25,7 @@ export class FirstPersonCamera {
   theta_: number;
   thetaSpeed_: number;
   target_!: HTMLElement
+  canvas_!: HTMLCanvasElement
   current_!: {
     leftButton: boolean;
     rightButton: boolean;
@@ -39,19 +40,25 @@ export class FirstPersonCamera {
   previousKeys_!: {
     [key:string]: boolean;
   };
+  enabled_: boolean
 
-  constructor(camera: PerspectiveCamera,target:HTMLElement,sensitivity = 0.0006) {
+  constructor(camera: PerspectiveCamera,target:HTMLElement,canvas:HTMLCanvasElement,position = new Vector3(0,0,0), sensitivity = 1) {
     this.camera_ = camera;
     this.sensitivity = sensitivity
+    this.canvas_ = canvas
     this.initializeInput_(target)
     this.rotation_ = new Quaternion();
-    this.translation_ = new Vector3(0, 2, 0);
+    this.translation_ = position;
     this.phi_ = 0;
     this.phiSpeed_ = 8;
     this.theta_ = 0;
     this.thetaSpeed_ = 5;
+    this.enabled_ = true
   }
-
+  toggleAvailability(availability: boolean){
+    this.enabled_ = availability
+    this.releaseKeys_()
+  }
   initializeInput_(target) {
     this.current_ = {
       leftButton: false,
@@ -71,6 +78,7 @@ export class FirstPersonCamera {
     this.target_.addEventListener('pointerup', (e) => this.onMouseUp_(e), false);
     this.target_.addEventListener('keydown', (e) => this.onKeyDown_(e), false);
     this.target_.addEventListener('keyup', (e) => this.onKeyUp_(e), false);
+    this.canvas_.addEventListener('pointerlockchange', () => this.releaseKeys_(),false)
   }
 
   destroy_(){
@@ -80,53 +88,67 @@ export class FirstPersonCamera {
       this.target_.removeEventListener('pointerup', (e) => this.onMouseUp_(e), false);
       this.target_.removeEventListener('keydown', (e) => this.onKeyDown_(e), false);
       this.target_.removeEventListener('keyup', (e) => this.onKeyUp_(e), false);
+      this.canvas_.removeEventListener('pointerlockchange', () => this.releaseKeys_(),false)
+    }
+  }
+  releaseKeys_(){
+    for(const key in this.keys_){
+      this.keys_[key] = false
+    }
+  }
+  onMouseMove_(e) {
+    if(this.enabled_){
+      this.current_.mouseXDelta = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+      this.current_.mouseYDelta = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+      this.updateRotation_()
+      this.updateCamera_()
+      this.current_.mouseXDelta = 0;
+      this.current_.mouseYDelta = 0;
     }
   }
 
-  onMouseMove_(e) {
-    this.current_.mouseXDelta = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
-    this.current_.mouseYDelta = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
-    console.log(this.current_.mouseXDelta,this.current_.mouseYDelta)
-    this.updateRotation_()
-    this.updateCamera_()
-    this.current_.mouseXDelta = 0;
-    this.current_.mouseYDelta = 0;
-  }
-
   onMouseDown_(e) {
-
-    switch (e.button) {
-      case 0: {
-        this.current_.leftButton = true;
-        break;
-      }
-      case 2: {
-        this.current_.rightButton = true;
-        break;
+    if(this.enabled_){
+      switch (e.button) {
+        case 0: {
+          this.current_.leftButton = true;
+          break;
+        }
+        case 2: {
+          this.current_.rightButton = true;
+          break;
+        }
       }
     }
   }
 
   onMouseUp_(e) {
-
-    switch (e.button) {
-      case 0: {
-        this.current_.leftButton = false;
-        break;
-      }
-      case 2: {
-        this.current_.rightButton = false;
-        break;
+    if(this.enabled_){
+      switch (e.button) {
+        case 0: {
+          this.current_.leftButton = false;
+          break;
+        }
+        case 2: {
+          this.current_.rightButton = false;
+          break;
+        }
       }
     }
   }
 
   onKeyDown_(e) {
-    this.keys_[e.keyCode] = true;
+    
+    if(this.enabled_){
+      this.keys_[e.keyCode] = true;
+    }
   }
 
   onKeyUp_(e) {
-    this.keys_[e.keyCode] = false;
+    
+    if(this.enabled_){
+      this.keys_[e.keyCode] = false;
+    }
   }
 
   key(keyCode) {
@@ -171,8 +193,8 @@ export class FirstPersonCamera {
   }
 
   updateRotation_() {
-    const xh = this.current_.mouseXDelta * this.sensitivity;
-    const yh = this.current_.mouseYDelta * this.sensitivity;
+    const xh = this.current_.mouseXDelta * 0.002 * this.sensitivity;
+    const yh = this.current_.mouseYDelta * 0.002 * this.sensitivity;
  
     this.phi_ += -xh * this.phiSpeed_;
     this.theta_ = clamp(this.theta_ + -yh * this.thetaSpeed_, -Math.PI / 3, Math.PI / 3);

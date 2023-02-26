@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { bloomObject } from "$lib/stores";
 	import { useThrelte } from "@threlte/core";
-	import { BlendFunction, DepthDownsamplingPass, EffectComposer, EffectPass, NormalPass, RenderPass, SelectiveBloomEffect, SMAAEffect, SSAOEffect, TextureEffect } from "postprocessing";
+	import { BlendFunction, EffectComposer, EffectPass, RenderPass, SelectiveBloomEffect, SMAAEffect } from "postprocessing";
 	import { onMount } from "svelte";
 	import { ACESFilmicToneMapping, HalfFloatType, Object3D, sRGBEncoding } from "three";
 

@@ -1,6 +1,6 @@
-import { writable, type Writable } from "svelte/store";
-import type { Object3D, RGB } from "three";
 import type { Graph } from "$lib/types";
+import { writable, type Writable } from "svelte/store";
+import type { Object3D } from "three";
 
 export const navi = writable(false)
 export const theme:Writable<"dark"|"light"> = writable("dark")
@@ -13,58 +13,30 @@ export const cam:Writable<{
     expectedRotation: [0,0,0],
     expectedPosition: [0,0,0],
 })
+
 export const dev:Writable<boolean>=writable(true)
 export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
 export const bloomObject: Writable<[obj:Object3D,type:string]>=writable()
 export const envIntensity: Writable<number>= writable(0.01)
+
 //default
 const def = writable({
     com:{
-        intensity:1,
-        distance:20,
+        intensity:20,
         power:50,
     },
-    ambient:{
-        color:{
-            r:40,
-            g:40,
-            b:40,
-        },
-        intensity:0.3,
-    },
-    hemisphere:{
-        skyColor:{
-            r:0,
-            g:0,
-            b:0,
-        },
-        groundColor:{
-            r:0,
-            g:0,
-            b:0,
-        },
-        intensity: 0.3,
-    },
-    view:{
-        player: false
+    explore: {
+        sensitivity: 0.1,
+        enabled: false,
     }
 })
 export const controls:Writable<{
-    com: {
-        intensity: number;
-        distance: number;
-        power: number;
-    };
-    ambient: {
-        color: RGB
-        intensity: number;
-    };
-    hemisphere: {
-        skyColor: RGB
-        groundColor: RGB
-        intensity: number;
-    };
-    view:{
-        player: boolean
+    com:{
+        intensity:number,
+        power:number,
+    },
+    explore: {
+        sensitivity: number
+        enabled: boolean
     }
 }> = def

@@ -4,36 +4,35 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\web\kuroneko\src\assets\m
 -->
 <script lang="ts">
   import type * as THREE from 'three'
-  import { Group, Vector3 } from 'three'
-  import { T, Three, type Props, type Events, type Slots } from '@threlte/core'
+  import { Group, Mesh, Vector3 } from 'three'
+  import { T, Three, type Props, type Events, type Slots, useFrame } from '@threlte/core'
   import { useGltf } from '@threlte/extras'
+	import Model from './Model.svelte';
 
   export const ref = new Group()
   export let rotateOrigin: [x:number,y:number,z:number] = [0,0,0]
   export let pos: [x:number,y:number,z:number] = [0,0,0]
-  
-  let computedOrigin = pos.map((x,i) => x - rotateOrigin[i]) as [x:number,y:number,z:number]
-  type GLTFResult = {
-    nodes: {
-      Icosphere_1: THREE.Mesh
-      Icosphere_2: THREE.Mesh
-    }
-    materials: {
-      light: THREE.MeshStandardMaterial
-      dark: THREE.MeshStandardMaterial
+  export let orbit = false
+  let obj: Group
+  let innerObj: Group
+  $:{
+    if(obj){
+      obj.traverse((child)=>{
+        child.castShadow = true
+        child.receiveShadow = true
+      })
     }
   }
+  useFrame((_,delta)=>{
+    update(delta)
+	})
 
-	const gltfUrl = new URL('$src/assets/models/moon/moon.glb', import.meta.url).href
-  const { gltf } = useGltf<GLTFResult>(gltfUrl, { useDraco: true })
+	function update(delta: number){
+    let scale = 1000*delta
+		if(orbit && obj && innerObj){
+      obj.rotateOnAxis(new Vector3(0,1,0),0.0001*scale)
+      innerObj.rotateOnAxis(new Vector3(0,1,0),0.0005*scale)
+    }
+	}
 </script>
-
-{#if $gltf}
-  <Three position={rotateOrigin} type={ref} {...$$restProps}>
-    <T.Group position={computedOrigin} scale={7}>
-      <T.Mesh geometry={$gltf.nodes.Icosphere_1.geometry} material={$gltf.materials.light} />
-      <T.Mesh geometry={$gltf.nodes.Icosphere_2.geometry} material={$gltf.materials.dark} />
-      <slot {ref} />
-    </T.Group>
-  </Three>
-{/if}
+<Model bind:obj={obj} bind:innerObj={innerObj} pos={pos} rotateOrigin={rotateOrigin} {...$$restProps}/>

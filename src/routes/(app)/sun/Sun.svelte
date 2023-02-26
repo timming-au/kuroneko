@@ -84,7 +84,7 @@
             dirLight.shadow.camera.bottom = -3.75 * planetScale;
             dirLight.shadow.camera.left = -3.75 * planetScale;
             dirLight.shadow.camera.right = 3.75 * planetScale;
-            scene.add( new CameraHelper( dirLight.shadow.camera ) );
+            // scene.add( new CameraHelper( dirLight.shadow.camera ) );
         }
     }
 	$:{

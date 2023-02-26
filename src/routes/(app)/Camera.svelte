@@ -1,47 +1,46 @@
 <script lang="ts">
-	import { dev } from "$lib/stores";
-	import { OrbitControls, useThrelte, PerspectiveCamera, useFrame } from "@threlte/core";
-	import { useFixedJoint } from "@threlte/rapier";
-	import { onDestroy } from "svelte";
-	import { onMount } from "svelte";
-	import type { PerspectiveCamera as PerspectiveCamera3 } from "three";
-	import { DEG2RAD } from "three/src/math/MathUtils";
+	import { controls } from "$lib/stores";
+	import { PerspectiveCamera, useFrame, useThrelte } from "@threlte/core";
+	import { onDestroy, onMount } from "svelte";
+	import { Vector3 } from "three";
+	import Astronaut from "./astronaut/Astronaut.svelte";
 	import { FirstPersonCamera } from "./Controller";
-	import { FlyControls } from "./Fly";
     const {camera, renderer} = useThrelte()
-    let controls: FirstPersonCamera
+    let fpsCamera: FirstPersonCamera
+    export let position = new Vector3(0,0,10)
     let a = 0
+    $:{
+        $controls.explore.sensitivity, updateSens()
+    }
+    function updateSens(){
+        if(fpsCamera){
+            fpsCamera.sensitivity = $controls.explore.sensitivity
+        }
+    }
+    $:{
+        if(fpsCamera){
+            $controls.explore.enabled, fpsCamera.toggleAvailability($controls.explore.enabled)
+        }
+    }
     onMount(()=>{
-        if($camera && renderer && a <= 0){
-            if(controls){
-                controls.destroy_()
+        if($camera && renderer){
+            if(fpsCamera){
+                fpsCamera.destroy_()
             }
-            controls = new FirstPersonCamera( ($camera as unknown as PerspectiveCamera), document.documentElement );
-            console.log("a")
-            a++
+            fpsCamera = new FirstPersonCamera( ($camera as unknown as PerspectiveCamera), document.documentElement, renderer.domElement, position, $controls.explore.sensitivity);
         }
     })
     useFrame((_,delta)=>{
-        if(controls){
-            controls.update( delta );
+        if(fpsCamera){
+            fpsCamera.update( delta );
         }
     })
     onDestroy(()=>{
-        if(controls){
-            controls.destroy_()
+        if(fpsCamera){
+            fpsCamera.destroy_()
         }
     })
 </script>
-
-<PerspectiveCamera near={0.1} far={200} position={{x:0,y:0,z:0}} fov={90}>
-    <!-- {#if $dev}
-    <OrbitControls
-    target={{ y: 0 }}
-    maxPolarAngle={360 * DEG2RAD}
-    minPolarAngle={0 * DEG2RAD}
-    maxAzimuthAngle={180 * DEG2RAD}
-    minAzimuthAngle={-180 * DEG2RAD}
-    enableZoom={true}
-    />
-    {/if} -->
+<PerspectiveCamera near={0.1} far={200} fov={90}>
+    <Astronaut rotation={[0,Math.PI,0]} scale={0.1} position={[0,0,0]}/>
 </PerspectiveCamera>

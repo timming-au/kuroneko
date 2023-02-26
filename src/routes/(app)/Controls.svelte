@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { controls } from "$lib/stores";
 	import { onMount, tick } from "svelte";
 
@@ -29,4 +29,4 @@
         await tick()
         $controls = {...$controls}
     })
-</script>
+</script> -->

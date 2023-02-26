@@ -28,18 +28,7 @@
         // console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
     };
     let canvas: HTMLDivElement
-    onMount(()=>{
-        canvas.addEventListener("click", async function(){
-            await canvas.requestPointerLock();
-        })
-    })
-    onDestroy(()=>{
-        if(canvas){
-            canvas.removeEventListener("click",async function(){
-                await canvas.requestPointerLock();
-            })
-        }
-    })
+    
 </script>
 <div id="loading" class="w-screen h-screen absolute bg-black flex items-center justify-center">
     <p>Loading... {load.percent}%</p>
@@ -54,9 +43,7 @@
         stencil: false,
         depth: false,
     }}>
-        {#if $dev && window}
-        <Interface/>
-        {/if}
         <Scene loaded={load.done}/>
     </Canvas>
 </div>
+<Interface/>

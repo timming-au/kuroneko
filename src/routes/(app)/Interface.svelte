@@ -6,6 +6,7 @@
     import "../../app.css"
     let gui: GUI
     import gsap from "gsap";
+    import { useThrelte } from "@threlte/core";
     const KEYS = {
         'a': 65,
         's': 83,
@@ -25,8 +26,7 @@
         updateSlider(sliderSens)
         showInterface()
         document.addEventListener("keydown",onKeyDown)
-    })
-    onMount(()=>{
+        window.addEventListener("blur",showInterface)
         overlay.addEventListener("click", async function(e){                                    
             if(e.type == "click"){
                 if (document.pointerLockElement !== overlay) {
@@ -41,8 +41,6 @@
         if(overlay){
             overlay.removeEventListener("click",onKeyDown)
         }
-    })
-    onDestroy(()=>{
         if(typeof document !== "undefined"){
             document.removeEventListener("keydown",onKeyDown)
         }
@@ -67,15 +65,16 @@
         overlayVisible = !overlayVisible
         $controls.explore.enabled = !overlayVisible
         animateOverlay()
+        if(overlayVisible){
+
+        }
     }
     function animateOverlay(instant = false){
         gsap.to(overlay,{
             opacity: !overlayVisible ? 0 : 1,
             backdropFilter: `blur(${!overlayVisible ? 0 : 4}px)`,
             duration: instant ? 0 : 0.3,
-            onComplete:()=>{
-                overlay.style.display = !overlayVisible ? "none" : "flex"
-            }
+            display: !overlayVisible ? "none" : "flex"
         })
     }
     function animate() {
@@ -86,75 +85,115 @@
 
     }
     function updateSlider(e){
-        let value = (e.value-e.min)/(e.max-e.min)*100
-        $controls.explore.sensitivity = e.value
-        e.style.background = 'linear-gradient(to right, #ffa8d5 0%, #ffa8d5 ' + value + '%, #54464d ' + value + '%, #54464d 100%)'
+        sliderSensFillPercentage = (e.value-e.min)/(e.max-e.min)*100
     }
+    let sliderSensFillPercentage = 0
     let overlayVisible = false
     let overlay: HTMLElement
     let sliderSens: HTMLInputElement
-    
+    let tabs = ["settings","about"]
+    let menu = "settings"
+    let hoverTab = menu
 </script>
-<div id="interface" bind:this={overlay} class="text-white z-[9999999999] cursor-pointer bg-black bg-opacity-40 pointer-events-auto gap-12 flex-col absolute left-0 top-0 w-full h-full flex items-center justify-center transition-all">
-    <div class='flex -mt-20' on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
-        <span class="text-6xl">neko</span>
-        <span class="text-[#ffa8d5] text-6xl">OS</span>
-    </div>
-    <div class="grid grid-cols-2 gap-8" on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
-        <div class="flex flex-col gap-4" >
-            <p class="text-4xl">settings</p>
-            <span class="border-[1px] border-pink-300"/>
-            <div class="gap-1 flex items-center justify-center flex-col">
-                <div class="flex w-full justify-center items-center gap-4">
-                    <label for="sensitivity">Camera sensitivity</label>
-                    <p class="font-semibold text-lg">{$controls.explore.sensitivity}</p>
-                </div>
-                <input name="sensitivity" on:input={(e)=>{updateSlider(e.target)}}  bind:this={sliderSens} class="pointer-events-auto slider cursor-pointer" value={$controls.explore.sensitivity} type="range" min=0.1 max=1 step=0.1>
-            </div>
+<div id="interface" bind:this={overlay} class="text-white z-[99999999] cursor-pointer bg-black bg-opacity-50 pointer-events-auto gap-12 flex-col absolute left-0 top-0 w-full h-full flex items-center">
+    <div class='flex items-center mt-[20vh]' on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
+        <div class='flex items-end'>
+            <span class="text-6xl">neko</span>
+            <span class="text-[#ffa8d5] text-6xl">OS_</span>
+            <span class="ml-2 text-xs text-gray-400">v1.0.0</span>
         </div>
-        <div class="flex flex-col gap-4">
-            <p class="text-4xl">controls</p>
-            <span class="border-[1px] border-pink-300"/>
-            <div class="gap-2 flex flex-col items-center justify-center">
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="flex gap-1 col-span-1 justify-end">
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">W</kbd>
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">A</kbd>
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">S</kbd>
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">D</kbd>
-                    </div>
-                    <div class="flex col-span-1">
-                        <p>Move</p>
-                    </div>
+        <div class='flex'>
+            <img src="cat-160.png" alt="cat"/>
+        </div>
+        <div class="grid grid-cols-2 grid-rows-{tabs.length} gap-2">
+            {#each tabs as tab}
+            <div id="{tab}" class="grid grid-cols-2 col-span-2 row-span-2">
+                <div class="flex items-center justify-end">
+                    <svg class="{hoverTab == tab ? "opacity-1" : "opacity-0"}" fill="none" width=24 height=24 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M8 5v2h2V5H8zm4 4V7h-2v2h2zm2 2V9h-2v2h2zm0 2h2v-2h-2v2zm-2 2v-2h2v2h-2zm0 0h-2v2h2v-2zm-4 4v-2h2v2H8z" fill="currentColor"/> </svg>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="flex col-span-1 justify-end">
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">Space</kbd>
-                    </div>
-                    <div class="flex col-span-1">
-                        <p>Ascend</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="flex col-span-1 justify-end">
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">Shift</kbd>
-                    </div>
-                    <div class="flex col-span-1">
-                        <p>Descend</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="flex col-span-1 justify-end">
-                        <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">E</kbd>
-                    </div>
-                    <div class="flex col-span-1">
-                        <p>Open/close interface</p>
-                    </div>
-                </div>
+                <div on:keypress={()=>{menu = tab}} on:mouseleave={()=>{hoverTab = menu}} on:mouseenter={()=>{hoverTab = tab}} on:click={()=>{menu = tab}} class="cursor-pointer border-pink-300 {menu == tab ? "border-2 bg-pink-200 text-black font-semibold" : "border-[1px] hover:bg-pink-100 hover:bg-opacity-20"} px-1.5 py-1 flex items-center justify-center w-20">{tab}</div>
             </div>
+            {/each}
         </div>
     </div>
-    <div on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()} class=" flex items-center justify-center gap-1">
+    {#if menu == "settings"}
+        <div id="settings" on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="flex flex-col gap-4" >
+                    <p class="text-4xl">settings</p>
+                    <span class="border-[1px] border-pink-300"/>
+                    <div class="gap-1 flex items-center justify-center flex-col">
+                        <div class="flex w-full justify-center items-center gap-4">
+                            <label for="sensitivity">Camera sensitivity</label>
+                            <p class="font-semibold text-lg">{$controls.explore.sensitivity}</p>
+                        </div>
+                        <input name="sensitivity" on:input={(e)=>{updateSlider(e.target)}}  bind:this={sliderSens} style={'background-image:linear-gradient(to right, #ffa8d5 0%, #ffa8d5 ' + sliderSensFillPercentage + '%, #54464d ' + sliderSensFillPercentage + '%, #54464d 100%)'} class="pointer-events-auto slider cursor-pointer" bind:value={$controls.explore.sensitivity} type="range" min=0.1 max=1 step=0.1>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <p class="text-4xl">controls</p>
+                    <span class="border-[1px] border-pink-300"/>
+                    <div class="gap-2 flex flex-col items-center justify-center">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex gap-1 col-span-1 justify-end">
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">W</kbd>
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">A</kbd>
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">S</kbd>
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">D</kbd>
+                            </div>
+                            <div class="flex col-span-1">
+                                <p>Move</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex col-span-1 justify-end">
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">Space</kbd>
+                            </div>
+                            <div class="flex col-span-1">
+                                <p>Ascend</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex col-span-1 justify-end">
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">Shift</kbd>
+                            </div>
+                            <div class="flex col-span-1">
+                                <p>Descend</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex col-span-1 justify-end">
+                                <kbd class="px-2 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">E</kbd>
+                            </div>
+                            <div class="flex col-span-1">
+                                <p>Open/close interface</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+    {#if menu == "about"}
+        <div id="about" on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
+            <div class="flex flex-col gap-10">
+                <div class="flex flex-col gap-4">
+                    <p class="text-4xl">About</p>
+                    <span class="border-[1px] border-pink-300"/>
+                </div>
+                <div class="flex flex-col">
+                    <p>A low-poly pastel-colored world inspired by black cats.</p>
+                    <p>Exploration involves an astronaut.</p>
+                </div>
+                <a class="flex items-center gap-2" href="https://github.com/timming-au/kuroneko" target="_blank" rel="noreferrer">
+                    <svg fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"> <path d="M8 5h2v2H8V5zM6 7h2v2H6V7zM4 9h2v2H4V9zm-2 2h2v2H2v-2zm2 2h2v2H4v-2zm2 2h2v2H6v-2zm2 2h2v2H8v-2zm8-12h-2v2h2V5zm2 2h-2v2h2V7zm2 2h-2v2h2V9zm2 2h-2v2h2v-2zm-2 2h-2v2h2v-2zm-2 2h-2v2h2v-2zm-2 2h-2v2h2v-2z" fill="#ffa8d5"/> </svg>
+                    <p class="text-2xl border-b-[1px] border-pink-200">source</p>
+                </a>
+            </div>
+        </div>
+    {/if}
+    
+    <div on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()} class=" flex items-center justify-center gap-1 absolute bottom-[20%]">
         <p>Press</p>
         <kbd class="px-1.5 py-0.5 text-sm font-semibold text-pink-100 bg-gray-700 border-gray-300 border-b-[1px] rounded-sm">E</kbd>
         <p>or</p>

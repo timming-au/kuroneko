@@ -1,46 +1,68 @@
 <script lang="ts">
-	import { controls } from "$lib/stores";
+	import { controls, isMobile } from "$lib/stores";
 	import { PerspectiveCamera, useFrame, useThrelte } from "@threlte/core";
 	import { onDestroy, onMount } from "svelte";
-	import { Vector3 } from "three";
+	import { tick } from "svelte";
+	import { Group, Vector3 } from "three";
 	import Astronaut from "./astronaut/Astronaut.svelte";
 	import { FirstPersonCamera } from "./Controller";
-    const {camera, renderer} = useThrelte()
+    import {ArcballControls} from "three/examples/jsm/controls/ArcballControls"
+    const {camera, renderer, scene} = useThrelte()
     let fpsCamera: FirstPersonCamera
+    let arcball: ArcballControls
+    let astronaut: Group
     export let position = new Vector3(0,0,10)
-    let a = 0
     $:{
         $controls.explore.sensitivity, updateSens()
-    }
-    function updateSens(){
-        if(fpsCamera){
-            fpsCamera.sensitivity = $controls.explore.sensitivity
-        }
     }
     $:{
         if(fpsCamera){
             $controls.explore.enabled, fpsCamera.toggleAvailability($controls.explore.enabled)
         }
     }
-    onMount(()=>{
-        if($camera && renderer){
-            if(fpsCamera){
-                fpsCamera.destroy_()
-            }
-            fpsCamera = new FirstPersonCamera( ($camera as unknown as PerspectiveCamera), document.documentElement, renderer.domElement, position, $controls.explore.sensitivity);
-        }
-    })
-    useFrame((_,delta)=>{
+    function updateSens(){
         if(fpsCamera){
-            fpsCamera.update( delta );
+            fpsCamera.sensitivity = $controls.explore.sensitivity
         }
+    }
+    onMount(async()=>{
+        await tick()
+        if($camera){
+            if(renderer){
+                if($isMobile){
+                    arcball = new ArcballControls($camera,renderer.domElement, scene)
+                    arcball.adjustNearFar = true
+                    arcball.maxDistance = 100
+                    arcball.minDistance = 5
+                    arcball.enableZoom = false
+                    arcball.enablePan = false
+                    $camera.position.copy(position)
+                    arcball.update()
+                }else{
+                    if(fpsCamera){
+                        fpsCamera.destroy_()
+                    }
+                    fpsCamera = new FirstPersonCamera( ($camera as unknown as PerspectiveCamera), document.documentElement, renderer.domElement, position, $controls.explore.sensitivity);
+                }
+            }
+        }
+        
     })
     onDestroy(()=>{
         if(fpsCamera){
             fpsCamera.destroy_()
         }
     })
+    useFrame((_,delta)=>{
+        if($camera && astronaut){
+            console.log($camera.position,astronaut.getWorldPosition(new Vector3()))
+        }
+        if(fpsCamera){
+            fpsCamera.update( delta );
+        }
+    })
 </script>
+<div class="absolute z-[9999999999] top-0 left-0">{$camera.position.toArray()}</div>
 <PerspectiveCamera near={0.1} far={200} fov={90}>
-    <Astronaut rotation={[0,Math.PI,0]} scale={0.1} position={[0,0,0]}/>
+    <Astronaut bind:obj={astronaut} rotation={[0,Math.PI,0]} scale={0.1} position={[0,0,0]}/>
 </PerspectiveCamera>

@@ -9,12 +9,8 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\web\kuroneko\src\assets\m
   import { useGltf } from '@threlte/extras'
 	import { mat_basic, mat_shield } from './Materials';
 
-  type $$Props = Props<THREE.Group>
-  type $$Events = Events<THREE.Group>
-  type $$Slots = Slots<THREE.Group>
-
   export const ref = new Group()
-
+  export let obj: Group
   type GLTFResult = {
     nodes: {
       head: THREE.Mesh
@@ -34,7 +30,6 @@ Command: npx @threlte/gltf@0.0.5 C:\Users\kuro\Desktop\web\kuroneko\src\assets\m
 
 	const gltfUrl = new URL('$src/assets/models/astronaut/astronaut.glb', import.meta.url).href
   const { gltf } = useGltf<GLTFResult>(gltfUrl, { useDraco: true })
-  let obj: Group
   $: {
     if(obj){
       obj.traverse((child)=>{

@@ -1,21 +1,12 @@
 <script lang="ts">
 	import { useThrelte } from "@threlte/core";
-	import { Group, Vector3 } from "three";
+	import type { Group } from "three";
 	import Moon from "./moon/Moon.svelte";
 	import Nekocom from "./nekocom/Nekocom.svelte";
 	import Planet from "./planet/Planet.svelte";
 	import Sun from "./sun/Sun.svelte";
 	import Trees from "./trees/Trees.svelte";
 
-    const {camera} = useThrelte()
-	$:{
-		if(nekoComObj && $camera){
-			let pos = nekoComObj.getWorldPosition(new Vector3())
-			let {x,y,z} = new Vector3().copy(pos).add(new Vector3(0,0,3))
-			$camera.position.set(x,y,z)
-			$camera.lookAt(pos)
-		}
-	}
 	let nekoComObj: Group;
 	let planetScale = 1
 	let planetModel: Group

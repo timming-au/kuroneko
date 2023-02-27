@@ -18,6 +18,7 @@ export const dev:Writable<boolean>=writable(true)
 export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
 export const bloomObject: Writable<[obj:Object3D,type:string]>=writable()
 export const envIntensity: Writable<number>= writable(0.01)
+export const isMobile: Writable<boolean> = writable(false)
 
 //default
 const def = writable({

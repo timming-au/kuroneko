@@ -136,7 +136,7 @@
                     </div>
                     <div class="gap-1 flex items-center justify-center flex-col">
                         <p>Graphics quality</p>
-                        <div class="grid grid-cols-{parseInt(Object.keys(qualities).length+"")} gap-2">
+                        <div class="flex items-center justify-center gap-2">
                             {#each Object.entries(qualities) as [abbr,q]}
                             <div id="{abbr}" class="col-span-1 flex-col flex items-center">
                                 <div on:keypress={()=>{$quality = q}} on:mouseleave={()=>{hoverQuality = $quality}} on:mouseenter={()=>{hoverQuality = q}} on:click={()=>{$quality = q}} class="cursor-pointer border-pink-300 {$quality == q ? "border-2 bg-pink-200 text-black font-semibold" : "border-[1px] hover:bg-pink-100 hover:bg-opacity-20"} px-1.5 py-1 flex items-center justify-center w-12">{abbr}</div>

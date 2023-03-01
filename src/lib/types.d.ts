@@ -6,3 +6,4 @@ export type Graph = {
 	materials: Record<string, any>
 }
 export type BloomType = "weak" | "strong" | "sun" | undefined
+export type QualitySettings = "low" | "med" | "high"

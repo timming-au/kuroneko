@@ -33,10 +33,7 @@
                     arcball = new ArcballControls($camera,renderer.domElement, scene)
                     arcball.adjustNearFar = true
                     arcball.maxDistance = 100
-                    arcball.minDistance = 5
-                    arcball.enableZoom = false
-                    arcball.enablePan = false
-                    $camera.position.copy(position)
+                    arcball.minDistance = 1
                     arcball.update()
                 }else{
                     if(fpsCamera){
@@ -54,15 +51,12 @@
         }
     })
     useFrame((_,delta)=>{
-        if($camera && astronaut){
-            console.log($camera.position,astronaut.getWorldPosition(new Vector3()))
-        }
         if(fpsCamera){
             fpsCamera.update( delta );
         }
     })
 </script>
 <div class="absolute z-[9999999999] top-0 left-0">{$camera.position.toArray()}</div>
-<PerspectiveCamera near={0.1} far={200} fov={90}>
+<PerspectiveCamera position={position} near={0.05} far={300} fov={90}>
     <Astronaut bind:obj={astronaut} rotation={[0,Math.PI,0]} scale={0.1} position={[0,0,0]}/>
 </PerspectiveCamera>

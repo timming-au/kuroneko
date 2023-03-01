@@ -2,7 +2,7 @@
 	import { controls } from "$lib/stores";
 	import { useThrelte } from "@threlte/core";
 	import { World as RapierWorld } from '@threlte/rapier';
-	import { Color } from "three";
+	import { Color, Group, Mesh } from "three";
 	import Camera from "./Camera.svelte";
 	import Controls from "./Controls.svelte";
 	import Hdr from "./Hdr.svelte";
@@ -35,16 +35,16 @@
 	// 		})
 	// 	}
 	// }
-	
+	let sun: Mesh;
 	scene.background = new Color("rgb(10,10,10)");
 </script>
-<Renderer loaded={loaded}/>
+<Renderer sun={sun} loaded={loaded}/>
 <Controls/>
 
 <Hdr/>
 <Camera/>
 
 <RapierWorld gravity={{y:-9.81}}>
-	<World/>
+	<World bind:sun={sun}/>
 </RapierWorld>
 <svelte:window on:beforeunload={()=>localStorage.setItem("controls",JSON.stringify($controls))}></svelte:window>

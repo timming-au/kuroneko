@@ -1,11 +1,12 @@
 <script lang="ts">
-    import { controls, isMobile } from "$lib/stores";
+    import { controls, isMobile, quality } from "$lib/stores";
     import type { GUI } from 'dat.gui';
     import Stats from "stats.js"
     import { onDestroy, onMount, tick } from "svelte";
     import "../../app.css"
     let gui: GUI
     import gsap from "gsap";
+	import type { QualitySettings } from "$lib/types";
     const KEYS = {
         'a': 65,
         's': 83,
@@ -89,7 +90,9 @@
     let overlay: HTMLElement
     let sliderSens: HTMLInputElement
     let tabs = ["settings","about"]
+    let qualities: Record<string, QualitySettings> = {lo:"low",md:"med",hi:"high"}
     let menu = "settings"
+    let hoverQuality = $quality
     let hoverTab = menu
 </script>
 <div id="interface" bind:this={overlay} class="text-white z-[99999999] cursor-pointer bg-black bg-opacity-50 pointer-events-auto gap-6 md:gap-12 flex-col absolute left-0 top-0 w-full h-full flex items-center">
@@ -130,6 +133,19 @@
                             <p class="font-semibold text-base md:text-lg">{$controls.explore.sensitivity}</p>
                         </div>
                         <input name="sensitivity" on:input={(e)=>{updateSlider(e.target)}}  bind:this={sliderSens} style={'background-image:linear-gradient(to right, #ffa8d5 0%, #ffa8d5 ' + sliderSensFillPercentage + '%, #54464d ' + sliderSensFillPercentage + '%, #54464d 100%)'} class="pointer-events-auto slider cursor-pointer" bind:value={$controls.explore.sensitivity} type="range" min=0.1 max=1 step=0.1>
+                    </div>
+                    <div class="gap-1 flex items-center justify-center flex-col">
+                        <p>Graphics quality</p>
+                        <div class="grid grid-cols-{parseInt(Object.keys(qualities).length+"")} gap-2">
+                            {#each Object.entries(qualities) as [abbr,q]}
+                            <div id="{abbr}" class="col-span-1 flex-col flex items-center">
+                                <div on:keypress={()=>{$quality = q}} on:mouseleave={()=>{hoverQuality = $quality}} on:mouseenter={()=>{hoverQuality = q}} on:click={()=>{$quality = q}} class="cursor-pointer border-pink-300 {$quality == q ? "border-2 bg-pink-200 text-black font-semibold" : "border-[1px] hover:bg-pink-100 hover:bg-opacity-20"} px-1.5 py-1 flex items-center justify-center w-12">{abbr}</div>
+                                <div class="flex items-center justify-center">
+                                    <svg class="{$quality == q ? "opacity-1" : "opacity-0"} -rotate-90" fill="none" width=24 height=24 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M8 5v2h2V5H8zm4 4V7h-2v2h2zm2 2V9h-2v2h2zm0 2h2v-2h-2v2zm-2 2v-2h2v2h-2zm0 0h-2v2h2v-2zm-4 4v-2h2v2H8z" fill="currentColor"/> </svg>
+                                </div>
+                            </div>
+                            {/each}
+                        </div>
                     </div>
                 </div>
                 {#if !$isMobile}

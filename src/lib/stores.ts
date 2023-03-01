@@ -1,4 +1,4 @@
-import type { Graph } from "$lib/types";
+import type { Graph, QualitySettings } from "$lib/types";
 import { writable, type Writable } from "svelte/store";
 import type { Object3D } from "three";
 
@@ -19,7 +19,7 @@ export const assetsLoaded:Writable<{[filename:string]:Graph}>=writable({})
 export const bloomObject: Writable<[obj:Object3D,type:string]>=writable()
 export const envIntensity: Writable<number>= writable(0.01)
 export const isMobile: Writable<boolean> = writable(false)
-
+export const quality: Writable<QualitySettings> = writable("med")
 //default
 const def = writable({
     com:{

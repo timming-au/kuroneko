@@ -9,6 +9,7 @@
 	export let bloomType: BloomType = "sun"
     export let pos: [x:number,y:number,z:number] = [0,0,0]
     export let planetScale: number = 1
+    export let sun: Mesh
     let sunMesh: Mesh
     let sunGroup: Group
     let light: PointLight3
@@ -101,6 +102,6 @@
 </script>
 <T.Group bind:ref={sunGroup} position={pos}>
     <T.Mesh bind:ref={sunMesh}>
-        <T.Mesh geometry={new IcosahedronGeometry(radius,2)} material={mat_sun}></T.Mesh>
+        <T.Mesh bind:ref={sun} geometry={new IcosahedronGeometry(radius,2)} material={mat_sun}></T.Mesh>
     </T.Mesh>
 </T.Group>

@@ -27,7 +27,6 @@
                 /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
             }
         }
-
         $isMobile = hasTouchScreen
     })
     let load = {
@@ -54,22 +53,21 @@
             ease: "linear",
             onUpdate:()=>{
                 load.percent = Math.floor(Math.max(load.percent, load.percentReal))
-                console.log(load.percent)
             }
         })
     };
     let canvas: HTMLDivElement
     
 </script>
-<div id="loading" class="z-[9999999999] gap-2 w-screen h-screen absolute flex-col bg-black flex items-center justify-center text-xl">
+<div id="loading" class="z-[9999999999] gap-2 w-full h-full absolute flex-col bg-black flex items-center justify-center text-xl">
     <p class="text-white">Booting... {load.percent}%</p>
     <div class="relative w-24 h-2 bg-[#54464d] rounded flex items-center">
         <div style="width:{load.percent}%" class="h-full bg-pink-300 rounded"></div>
         <img alt="paw" src="paw.png" class="absolute left-0 -ml-[11px]" style="left:{load.percent}%;transform:rotate({load.percent/100*360}deg)"/>
     </div>
 </div>
-<span class="w-screen h-screen absolute" id="main">
-    <div id="canvas" bind:this={canvas} class="w-screen h-screen absolute">
+<span class="w-full h-full fixed" id="main">
+    <div id="canvas" bind:this={canvas} class="w-full h-full absolute">
         <Canvas shadowMapType={PCFSoftShadowMap} frameloop="never" rendererParameters={{
             powerPreference: "high-performance",
             antialias: false,

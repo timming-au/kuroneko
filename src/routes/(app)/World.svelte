@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { useThrelte } from "@threlte/core";
-	import type { Group } from "three";
+	import type { Group, Mesh } from "three";
 	import Moon from "./moon/Moon.svelte";
 	import Nekocom from "./nekocom/Nekocom.svelte";
 	import Planet from "./planet/Planet.svelte";
@@ -10,9 +10,10 @@
 	let nekoComObj: Group;
 	let planetScale = 1
 	let planetModel: Group
+	export let sun: Mesh
 </script>
 
-<Sun planetScale={planetScale} pos={[30,5,150]}/>
+<Sun bind:sun={sun} planetScale={planetScale} pos={[30,5,150]}/>
 <Planet bind:model={planetModel} rotate bloomType="weak" scale={planetScale}>
 	<Trees planetObject={planetModel}/>
 	<Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}/>

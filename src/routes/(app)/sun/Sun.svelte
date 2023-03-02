@@ -1,15 +1,16 @@
 <script lang="ts">
 
 	import { PointLight, SpotLight, T, useFrame, useThrelte } from "@threlte/core";
-	import { CameraHelper, DirectionalLight, DirectionalLightHelper, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial, Object3D, PointLightHelper, SphereGeometry,  Vector2, Vector3, type PointLight as PointLight3 } from "three";
+	import { CameraHelper, DirectionalLight, DirectionalLightHelper, Group, IcosahedronGeometry, Mesh, MeshPhongMaterial, Object3D, PointLightHelper, SphereGeometry,  Vector2, Vector3, WebGLRenderer, WebGLRenderTarget, type PointLight as PointLight3 } from "three";
 	import { mat_sun } from "./Materials";
     export const type = new Group();
     import type { BloomType } from '$lib/types';
-	import { bloomObject } from "$lib/stores";
+	import { bloomObject, quality } from "$lib/stores";
 	export let bloomType: BloomType = "sun"
     export let pos: [x:number,y:number,z:number] = [0,0,0]
     export let planetScale: number = 1
     export let sun: Mesh
+    let dirLight: DirectionalLight
     let sunMesh: Mesh
     let sunGroup: Group
     let light: PointLight3
@@ -17,6 +18,12 @@
     let settings = {
         low: {
             light:{
+                castShadow: false,
+            }
+        },
+        med: {
+            light:{
+                castShadow: true,
                 shadow:{
                     mapSize: new Vector2(1024,1024),
                     radius: 2,
@@ -28,23 +35,11 @@
                 }
             }
         },
-        med: {
-            light:{
-                shadow:{
-                    mapSize: new Vector2(2048,2048),
-                    radius: 2,
-                    normalBias: 0.1,
-                    camera:{
-                        far:1000,
-                        near:10,
-                    },
-                }
-            }
-        },
         high: {
             light:{
+                castShadow: true,
                 shadow:{
-                    mapSize: new Vector2(4096,4096),
+                    mapSize: new Vector2(2048,2048),
                     radius: 1,
                     normalBias: 0.05,
                     camera:{
@@ -77,15 +72,23 @@
     }
     $:{
         if(scene && sunMesh){
-            let dirLight = new DirectionalLight(0xff7e33,5)
-            setQuality("light", "low", dirLight)
+            dirLight = new DirectionalLight(0xff7e33,5)
             sunGroup.add( dirLight );
-            dirLight.castShadow = true
             dirLight.shadow.camera.top = 3.75 * planetScale;
             dirLight.shadow.camera.bottom = -3.75 * planetScale;
             dirLight.shadow.camera.left = -3.75 * planetScale;
             dirLight.shadow.camera.right = 3.75 * planetScale;
             // scene.add( new CameraHelper( dirLight.shadow.camera ) );
+        }
+    }
+    $:{
+        if($quality && dirLight && scene && sunMesh){
+            if(dirLight.shadow.map){
+                dirLight.shadow.map.dispose()
+                dirLight.shadow.map = null as unknown as WebGLRenderTarget
+            }
+            dirLight.shadow.dispose()
+            setQuality("light", $quality, dirLight)
         }
     }
 	$:{

@@ -95,6 +95,9 @@
     let hoverQuality = $quality
     let hoverTab = menu
 </script>
+{#if $isMobile}
+<div id="toggle" class="z-[99999999999] absolute top-6 right-6 w-10 h-10 border-2 border-red-300" on:keypress={()=>toggleInterface()} on:click={()=>toggleInterface()}></div>
+{/if}
 <div id="interface" bind:this={overlay} class="text-white z-[99999999] cursor-pointer bg-black bg-opacity-50 pointer-events-auto gap-6 md:gap-12 flex-col absolute left-0 top-0 w-full h-full flex items-center">
     <div class='flex flex-col justify-end mt-[5rem] md:mt-[15vh] md:flex-row md:items-end' on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
         <div class="flex md:flex-row flex-col-reverse items-center md:items-end gap-4 md:gap-8">
@@ -252,7 +255,10 @@
         -webkit-appearance: none; /* Override default look */
         appearance: none;
         margin-top: -0.4rem; /* Centers thumb on the track */
-        background-image:url(paw.png);
+        background:url(paw.png);
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
         height: 21px;
         width: 23px;    
     }
@@ -260,6 +266,9 @@
         border: none; /*Removes extra border that FF applies*/
         border-radius: 0; /*Removes default border-radius that FF applies*/
         background-image:url(paw.png);
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
         height: 21px;
         width: 23px;  
     }

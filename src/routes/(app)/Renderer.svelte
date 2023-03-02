@@ -51,7 +51,6 @@
                 passFactory.smaa.effect!.applyPreset(SMAAPreset.ULTRA)
             }
         }
-        console.log(composer)
     }
     $:{
         if(mounted && sun && !sunIsInitialised){

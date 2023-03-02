@@ -5,7 +5,7 @@ import path from "path"
 const config: UserConfig = {
 	plugins: [sveltekit()],
 	ssr: {
-		noExternal: ['three', 'troika-three-text']
+		noExternal: ['postprocessing','three', 'troika-three-text']
 	},
     assetsInclude: ['**/*.gltf','**/*.hdr'],
     resolve: {

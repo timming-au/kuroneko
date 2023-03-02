@@ -91,4 +91,5 @@ export const getCentroid = (p:number[]) => {
         res += p[i]
     }
     return res/len
-}
+}   
+

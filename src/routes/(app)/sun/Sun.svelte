@@ -25,9 +25,9 @@
             light:{
                 castShadow: true,
                 shadow:{
-                    mapSize: new Vector2(1024,1024),
-                    radius: 2,
-                    normalBias: 0.1,
+                    mapSize: new Vector2(512,512),
+                    radius: 1,
+                    normalBias: 0.2,
                     camera:{
                         far:1000,
                         near:10,

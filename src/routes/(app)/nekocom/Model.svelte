@@ -1,36 +1,26 @@
 <script lang="ts">
-  import { RigidBody, AutoColliders, useRapier, useRigidBody } from "@threlte/rapier";
-  import { T, Three, useFrame } from "@threlte/core";
-	import { useGltf } from "@threlte/extras";
-	import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
-	import { Euler, Quaternion, type Group, type Mesh } from "three";
-	import type { RigidBody as RRigidBody } from "@dimforge/rapier3d-compat";
+  import { T } from "@threlte/core";
+  import { useGltf } from "@threlte/extras";
+  import type { RigidBodyTypeString } from "@threlte/rapier/dist/lib/parseRigidBodyType";
+  import type { Group, Mesh } from "three";
 
 	const gltfUrl = new URL('$src/assets/models/nekocom/nekocom.gltf', import.meta.url).href
 	const { gltf } = useGltf(gltfUrl)
 
-  export let rigidBodyType: RigidBodyTypeString
   export let obj:Group
   $:{
     if(obj){
       obj.traverse((child)=>{
         let c = child as Mesh
         if(c.isMesh){
-          c.castShadow = true
+          c.receiveShadow = true
+          c.castShadow = true;
         }
       })
     }
   }
-  let rigidBody: RRigidBody
-  useFrame(()=>{
-    if(rigidBody){
-      rigidBody.setRotation(obj.getWorldQuaternion(new Quaternion()),true)
-    }
-  })
 </script>
 {#if $gltf}
-<RigidBody bind:rigidBody={rigidBody} type={rigidBodyType}>
-  <AutoColliders shape={'trimesh'}>
     <T.Group bind:ref={obj} {...$$restProps}>
       <T.Mesh geometry={$gltf.nodes.monitor.geometry} material={$gltf.materials.monitor} />
       <T.Mesh geometry={$gltf.nodes.tail.geometry} material={$gltf.materials.tail} position={[-1.13, -0.66, 0.6]} />
@@ -67,6 +57,4 @@
   
       <slot/>
     </T.Group>
-  </AutoColliders>
-</RigidBody>
 {/if}

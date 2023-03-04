@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { bloomObject, quality } from "$lib/stores";
 	import { useThrelte } from "@threlte/core";
-	import { BlendFunction, CopyMaterial, Effect, EffectComposer, EffectPass, GodRaysEffect, KernelSize, Pass, RenderPass, SelectiveBloomEffect, ShaderPass, SMAAEffect, SMAAPreset } from "postprocessing";
+	import { BlendFunction, CopyMaterial, EffectComposer, EffectPass, GodRaysEffect, KernelSize, Pass, RenderPass, SelectiveBloomEffect, ShaderPass, SMAAEffect, SMAAPreset } from "postprocessing";
 	import { onMount } from "svelte";
 	import { ACESFilmicToneMapping, HalfFloatType, Mesh, Object3D, sRGBEncoding } from "three";
 
@@ -297,7 +297,7 @@
             bloomBuffer.forEach(([obj,type])=>{
                 if(Object.hasOwn(passFactory["bloom"], type)){
                     traverseWithoutParent(undefined,obj).forEach((object)=>{
-                        passFactory["bloom"][type].selection.toggle(object)
+                        passFactory["bloom"][type].selection.add(object)
                     })
                 }
             })

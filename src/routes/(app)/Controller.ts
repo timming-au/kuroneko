@@ -171,25 +171,25 @@ export class FirstPersonCamera {
     forward.add(this.translation_);
   }
   
-  updateTranslation_(timeElapsedS) {
+  updateTranslation_(delta) {
     const forwardVelocity = (this.key(KEYS.w) ? 1 : 0) + (this.key(KEYS.s) ? -1 : 0)
     const strafeVelocity = (this.key(KEYS.a) ? 1 : 0) + (this.key(KEYS.d) ? -1 : 0)
     const jumpVelocity = (this.key(KEYS.space) ? 1 : 0) + (this.key(KEYS.shift) ? -1 : 0)
     const qx = new Quaternion();
     qx.setFromAxisAngle(new Vector3(0, 1, 0), this.phi_);
     const up = new Vector3(0,1,0)
-    up.multiplyScalar(jumpVelocity * timeElapsedS)
+    up.multiplyScalar(jumpVelocity)
     const forward = new Vector3(0, 0, -1);
     forward.applyQuaternion(qx);
-    forward.multiplyScalar(forwardVelocity * timeElapsedS);
+    forward.multiplyScalar(forwardVelocity);
 
     const left = new Vector3(-1, 0, 0);
     left.applyQuaternion(qx);
-    left.multiplyScalar(strafeVelocity * timeElapsedS);
-    forward.add(left).normalize().multiplyScalar(0.05)
+    left.multiplyScalar(strafeVelocity);
+    forward.add(left).normalize().multiplyScalar(0.01)
     
-    forward.add(up.multiplyScalar(0.05*50))
-    this.translation_.add(forward);
+    forward.add(up.multiplyScalar(0.005))
+    this.translation_.add(forward.multiplyScalar(delta*200));
   }
 
   updateRotation_() {

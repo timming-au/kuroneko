@@ -45,11 +45,22 @@
         })
         overlay.addEventListener("keydown", onKeyDown)
     })
+    onMount(()=>{
+        showInterface()
+    })
     onDestroy(()=>{
         if(overlay){
             overlay.removeEventListener("click",onKeyDown)
+            overlay.removeEventListener("keydown", onKeyDown)
         }
         if(typeof document !== "undefined"){
+            document.removeEventListener("pointerlockchange",function(e){
+                if (document.pointerLockElement !== overlay) {
+                    showInterface()
+                }else{
+                    hideInterface()
+                }
+            })
             document.removeEventListener("keydown",onKeyDown)
         }
     })
@@ -98,7 +109,7 @@
         sliderSensFillPercentage = (e.value-e.min)/(e.max-e.min)*100
     }
     let sliderSensFillPercentage = 0
-    let overlayVisible = false
+    let overlayVisible = true
     let overlay: HTMLElement
     let sliderSens: HTMLInputElement
     let tabs = ["settings","about"]
@@ -110,7 +121,7 @@
 {#if $isMobile}
 <div id="toggle" class="z-[99999999999] absolute top-6 right-6 w-10 h-10 border-2 border-red-300" on:keypress={()=>toggleInterface()} on:click={()=>toggleInterface()}></div>
 {/if}
-<div id="interface" bind:this={overlay} class="text-white z-[99999999] cursor-pointer bg-black bg-opacity-50 pointer-events-auto gap-6 lg:gap-12 flex-col absolute left-0 top-0 w-full h-full flex items-center">
+<div id="interface" bind:this={overlay} class="text-white z-[99999999] cursor-pointer bg-black bg-opacity-50 pointer-events-auto gap-6 lg:gap-12 flex-col absolute left-0 top-0 w-full h-full hidden items-center">
     <div class='flex flex-col justify-end mt-[3rem] lg:mt-[15vh] lg:flex-row lg:items-end' on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
         <div class="flex lg:flex-row flex-col-reverse items-center lg:items-end lg:gap-8">
             <div class='flex items-end relative'>
@@ -138,26 +149,26 @@
     </div>
     {#if menu == "settings"}
         <div id="settings" on:keypress={(e)=>e.stopPropagation()} on:click={(e)=>e.stopPropagation()}>
-            <div class="flex-col flex lg:grid lg:grid-cols-2 lg:gap-8 min-w-[calc(40vw+5rem)] md:min-w-[calc(10vw+20rem)] max-w-[calc(50vw+5rem)] lg:min-w-[30rem] lg:max-w-[50rem]">
-                <div class="flex flex-col gap-2 lg:gap-4 lg:min-w-[25rem]">
+            <div class="flex-col flex lg:grid lg:grid-cols-2 lg:gap-12 min-w-[calc(40vw+5rem)] md:min-w-[calc(10vw+20rem)] max-w-[calc(50vw+5rem)] lg:min-w-[30rem] lg:max-w-[50rem]">
+                <div class="flex flex-col gap-2 lg:gap-5 lg:min-w-[20rem]">
                     <p class="text-xl lg:text-3xl border-b-2 border-pink-300">settings</p>
                     {#if !$isMobile}
                     <div class="flex flex-col gap-2 lg:gap-4">
                         <div class="gap-1 flex items-center justify-center flex-col">
                             <div class="flex w-full justify-center items-center gap-4">
-                                <label for="sensitivity">camera sensitivity</label>
-                                <p class="font-semibold text-base lg:text-lg">{$controls.explore.sensitivity}</p>
+                                <label class="text-base lg:text-lg" for="sensitivity">camera sensitivity</label>
+                                <p class="font-semibold text-md lg:text-xl">{$controls.explore.sensitivity}</p>
                             </div>
                             <input name="sensitivity" on:input={(e)=>{updateSlider(e.target)}}  bind:this={sliderSens} style={'background-image:linear-gradient(to right, #ffa8d5 0%, #ffa8d5 ' + sliderSensFillPercentage + '%, #54464d ' + sliderSensFillPercentage + '%, #54464d 100%)'} class="pointer-events-auto slider cursor-pointer" bind:value={$controls.explore.sensitivity} type="range" min=0.1 max=1 step=0.1>
                         </div>
                     </div>
                     {/if}
-                    <div class="gap-2 flex items-center justify-center flex-col">
-                        <p class="text-md lg:text-xl border-b-[1px] border-pink-200">graphics quality</p>
-                        <div class="flex items-center justify-center gap-2">
+                    <div class="flex items-center justify-center flex-col">
+                        <p class="text-md lg:text-lg">graphics quality</p>
+                        <div class="flex items-center justify-center gap-2 lg:gap-4 border-t-[1px] border-pink-300 pt-2 lg:pt-4">
                             {#each Object.entries(qualities) as [abbr,q]}
                             <div id="{abbr}" class="col-span-1 flex-col flex items-center">
-                                <div on:keypress={()=>{$quality = q}} on:mouseleave={()=>{hoverQuality = $quality}} on:mouseenter={()=>{hoverQuality = q}} on:click={()=>{$quality = q}} class="cursor-pointer border-pink-300 {$quality == q ? "border-2 bg-pink-200 text-black font-semibold" : "border-[1px] hover:bg-pink-100 hover:bg-opacity-20"} px-1.5 py-1 flex items-center justify-center w-12">{abbr}</div>
+                                <div on:keypress={()=>{$quality = q}} on:click={()=>{$quality = q}} class="cursor-pointer border-pink-300 {$quality == q ? "border-2 bg-pink-200 text-black font-semibold" : "border-[1px] hover:bg-pink-100 hover:bg-opacity-20"} px-1.5 py-1 flex items-center justify-center w-12">{abbr}</div>
                                 <div class="flex items-center justify-center">
                                     <svg class="{$quality == q ? "opacity-1" : "opacity-0"} -rotate-90" fill="none" width=24 height=24 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M8 5v2h2V5H8zm4 4V7h-2v2h2zm2 2V9h-2v2h2zm0 2h2v-2h-2v2zm-2 2v-2h2v2h-2zm0 0h-2v2h2v-2zm-4 4v-2h2v2H8z" fill="currentColor"/> </svg>
                                 </div>

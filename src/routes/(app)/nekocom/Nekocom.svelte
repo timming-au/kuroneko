@@ -20,6 +20,7 @@ Command: npx @threlte/gltf@0.0.5 /Users/ming/Desktop/app/src/assets/models/nekoc
 	let panel: Mesh
 </script>
 <Model position={comPos} {...$$restProps} bind:obj={obj} rigidBodyType={"fixed"}>
+	<slot/>
 	<Panel scale={$$props.scale} bind:panel={panel}>
 		<Content position={new Vector3(0,0,-0.07)} occlude pointerEvents="none" scale={0.05}/>
 	</Panel>

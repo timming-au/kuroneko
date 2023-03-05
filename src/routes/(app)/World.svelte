@@ -5,6 +5,7 @@
 	import Planet from "./planet/Planet.svelte";
 	import Sun from "./sun/Sun.svelte";
 	import Trees from "./trees/Trees.svelte";
+	import Stars from "./Stars.svelte";
 
 	let nekoComObj: Group;
 	let planetScale = 1
@@ -18,4 +19,5 @@
 	<Nekocom bloomType="strong" scale={0.1} comPos={[-0.17,3.32,0.18]} bind:obj={nekoComObj}></Nekocom>
 </Planet>
 <Moon orbit pos={[10,1,-10]} rotateOrigin={[0,0,0]}/>
+<Stars/>
 

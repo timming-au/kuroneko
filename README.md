@@ -1,12 +1,10 @@
 # kuroneko
-Nya! A neko based world in early stages of development built with threejs
-## Running locally
-1. Download/clone the repository
-2. `npm install`
-3. `npm run dev`
+Nya! A neko based world in threejs
 
-## todo
-- [ ] improve performance
+## screenshots
 
-## notes
-This website is hosted on vercel temporarily.
+### menu
+![image](https://user-images.githubusercontent.com/66764428/227705967-7565eb24-ecd2-4844-ae75-a9b53f80c50b.png)
+
+### simulation
+![image](https://user-images.githubusercontent.com/66764428/227706085-ee942607-4a7f-4edd-8b29-274dc7c7670f.png)

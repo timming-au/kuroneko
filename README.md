@@ -2,10 +2,10 @@
 Nya! A neko based world in threejs.
 
 ## stack
-svelte
-threlte
-typescript
-threejs
+- svelte
+- threlte
+- typescript
+- threejs
 
 ## screenshots
 

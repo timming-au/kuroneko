@@ -1,5 +1,11 @@
 # kuroneko
-Nya! A neko based world in threejs
+Nya! A neko based world in threejs.
+
+## stack
+svelte
+threlte
+typescript
+threejs
 
 ## screenshots
 

@@ -1,11 +1,13 @@
 # kuroneko
-Nya! A neko based world in threejs.
+Nya! A neko based world in threejs. Assets created by me.
 
 ## stack
 - svelte
 - threlte
 - typescript
 - threejs
+- blender
+- midjourney
 
 ## screenshots
 

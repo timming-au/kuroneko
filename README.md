@@ -1,5 +1,5 @@
 # kuroneko
-Nya! A neko based world in threejs. Assets created by me.
+Nya! A neko based world in threejs. Assets created by me.<br>
 Use keyboard controls to move around, or pan with your fingers on touchscreen devices.
 
 ## stack

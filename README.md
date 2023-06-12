@@ -1,5 +1,6 @@
 # kuroneko
 Nya! A neko based world in threejs. Assets created by me.
+Use keyboard controls to move around, or pan with your fingers on touchscreen devices.
 
 ## stack
 * typescript
@@ -17,3 +18,6 @@ Nya! A neko based world in threejs. Assets created by me.
 
 ### simulation
 ![image](https://user-images.githubusercontent.com/66764428/227706085-ee942607-4a7f-4edd-8b29-274dc7c7670f.png)
+
+### known issues
+Ambient lighting has not unexpected behavior on mobile devices.
